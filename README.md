@@ -1,2 +1,1 @@
-# year-cohort-projectName
-project template repo
+# Job Listing API
