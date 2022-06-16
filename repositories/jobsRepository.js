@@ -1,11 +1,11 @@
 const dbService = require('../services/dbService');
 
-let jobsCollection = null;
-dbService.connectToDb().then((db) => jobsCollection = db.collection('jobs'));
+// let jobsCollection = null;
+// dbService.connectToDb().then((db) => db);
 
 const getJobs = async() => {
-    console.log('Repository: getPigs');
-    return await jobsCollection.query('SELECT * FROM jobs;')
+    console.log('Repository: getJobs');
+    return await dbService.connectToDb().then((db) => db.query('SELECT * FROM jobs;'));
 }
 
 module.exports.getJobs = getJobs;
