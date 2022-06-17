@@ -30,6 +30,6 @@ const getJobs = async() => {
             lastJob['skill'].push(record['skill']);
     }})
     return allJobs;
-    
+
 }
 module.exports.getJobs = getJobs;
