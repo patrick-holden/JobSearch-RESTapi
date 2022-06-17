@@ -2,6 +2,7 @@ const dbService = require('../services/dbService');
 
 const getJobs = async() => {
     console.log('Repository: getJobs');
+
     const allRecords =  await dbService.connectToDb().then((db) => db.query(
       'SELECT `jobs`.`id`, ' +
       '`jobs`.`job_title`, ' +
