@@ -70,5 +70,39 @@ const getJob = async (id) => {
     return allJobData;
 }
 
+const getSearchJobs = async (jobSearch) => {
+    console.log('Repository: getSearchJob ' + jobSearch);
+    const allSearchRecords = await dbService.connectToDb().then((db) => db.query(
+        'SELECT `jobs`.`id`, ' +
+        '`jobs`.`job_title`, ' +
+        '`jobs`.`company`, ' +
+        '`jobs`.`logo`,' +
+        '`jobs`.`salary`,' +
+        '`jobs`.`type`, ' +
+        '`skills`.`skill` ' +
+        'FROM `jobs` ' +
+        'LEFT JOIN ' +
+        '`jobs_skills` ' +
+        'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
+        'LEFT JOIN `skills` ' +
+        'ON `jobs_skills`.`skill_id` = `skills`.`id`' +
+        'WHERE `jobs`.`job_title` LIKE "%' + jobSearch + '%";'));
+
+    let allSearchJobs = [];
+    let previousId = -1;
+    allSearchRecords.forEach((record) => {
+        let lastJob = allSearchJobs[allSearchJobs.length-1];
+        if (record['id'] !== previousId) {
+            previousId = record['id'];
+            record['skill'] = [record['skill']];
+            allSearchJobs.push(record);
+        } else {
+            lastJob['skill'].push(record['skill']);
+        }})
+
+    return allSearchJobs;
+}
+
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
+module.exports.getSearchJobs = getSearchJobs;

@@ -12,5 +12,13 @@ const getJob = (req, res) => {
     jobsService.getJob(jobId).then((job) => res.json(job));
 }
 
+const getSearchJobs = (req, res) => {
+    let jobSearch = req.params.key;
+    console.log(jobSearch);
+    console.log('Controller: getSearchJobs');
+    jobsService.getSearchJobs(jobSearch).then((searchedJobs) => res.json(searchedJobs));
+}
+
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
+module.exports.getSearchJobs = getSearchJobs;

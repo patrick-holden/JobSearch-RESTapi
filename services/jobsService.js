@@ -10,5 +10,11 @@ const getJob = async (id) => {
     return await jobsRepository.getJob(id);
 }
 
+const getSearchJobs = async (jobSearch) => {
+    console.log('Service: getSearchJobs ' + jobSearch);
+    return await jobsRepository.getSearchJobs(jobSearch);
+}
+
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
+module.exports.getSearchJobs = getSearchJobs;
