@@ -11,30 +11,24 @@ const getJobs = async() => {
       '`jobs`.`type`, ' +
       '`skills`.`skill` ' +
       'FROM `jobs` ' +
-      'RIGHT JOIN ' +
+      'LEFT JOIN ' +
       '`jobs_skills` ' +
       'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
       'LEFT JOIN `skills` ' +
-      'ON `jobs_skills`.`skill_id` = `skills`.`id`' +
-      'WHERE `jobs`.`id` = ' + 4 + ';'
+      'ON `jobs_skills`.`skill_id` = `skills`.`id`;'
     ));
+
     let allJobs = [];
     let previousId = -1;
     allRecords.forEach((record) => {
         let lastJob = allJobs[allJobs.length-1];
-        // console.log(lastJob);
         if (record['id'] !== previousId) {
             previousId = record['id'];
             record['skill'] = [record['skill']];
             allJobs.push(record);
         } else {
             lastJob['skill'].push(record['skill']);
-            console.log(lastJob);
-            console.log(record['skill']);
-
     }})
-    console.log(allJobs);
-    // console.log(jobSkills);
     return allJobs;
 }
 module.exports.getJobs = getJobs;
