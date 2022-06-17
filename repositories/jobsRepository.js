@@ -2,7 +2,7 @@ const dbService = require('../services/dbService');
 
 const getJobs = async() => {
     console.log('Repository: getJobs');
-    return await dbService.connectToDb().then((db) => db.query(
+    const allJobs =  await dbService.connectToDb().then((db) => db.query(
       'SELECT `jobs`.`id`, ' +
       '`jobs`.`job_title`, ' +
       '`jobs`.`company`, ' +
@@ -19,5 +19,10 @@ const getJobs = async() => {
       'WHERE `jobs`.`id` = ' + 4 + ';'
     ));
 
+    allJobs.forEach((job) => {
+    if (job['id'] == 4) {
+        console.log('hello');
+    }})
+    return allJobs;
+}
 module.exports.getJobs = getJobs;
-nes`.`id`;'
