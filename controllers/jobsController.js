@@ -7,6 +7,7 @@ const getJobs = (req, res) => {
 
 const getJob = (req, res) => {
     let jobId = parseInt(req.params.jobId);
+    console.log(jobId);
     console.log('Controller: getProduct');
     jobsService.getJob(jobId).then((job) => res.json(job));
 }
