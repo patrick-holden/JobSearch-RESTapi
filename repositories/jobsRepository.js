@@ -29,7 +29,46 @@ const getJobs = async() => {
         } else {
             lastJob['skill'].push(record['skill']);
     }})
+
     return allJobs;
 
 }
+
+const getJob = async (id) => {
+    console.log('Repository: getJob ' + id);
+    const allIdRecords = await dbService.connectToDb().then((db) => db.query(
+      'SELECT ' +
+                '`jobs`.`id`, ' +
+                '`jobs`.`job_title`, ' +
+                '`jobs`.`company`, ' +
+                '`jobs`.`logo`,' +
+                '`jobs`.`job_description`, ' +
+                '`jobs`.`salary`,' +
+                '`jobs`.`posted`,' +
+                '`jobs`.`type`, ' +
+                '`skills`.`skill` ' +
+            ' FROM `jobs` ' +
+                'LEFT JOIN ' +
+                '`jobs_skills` ' +
+                'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
+                'LEFT JOIN `skills` ' +
+                'ON `jobs_skills`.`skill_id` = `skills`.`id` ' +
+            'WHERE `jobs`.`id` = ' + id + ';'));
+
+    let allJobData = [];
+    let previousId = -1;
+    allIdRecords.forEach((record) => {
+        let lastJob = allJobData[allJobData.length-1];
+        if (record['job_id'] !== previousId) {
+            previousId = record['job_id'];
+            record['skill'] = [record['skill']];
+            allJobData.push(record);
+        } else {
+            lastJob['skill'].push(record['skill']);
+        }})
+
+    return allJobData;
+}
+
+module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
