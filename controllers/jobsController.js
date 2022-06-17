@@ -5,4 +5,11 @@ const getJobs = (req, res) => {
     jobsService.getJobs().then((allJobs) => res.json(allJobs));
 }
 
+const getJob = (req, res) => {
+    let jobId = parseInt(req.params.jobId);
+    console.log('Controller: getProduct');
+    jobsService.getJob(jobId).then((job) => res.json(job));
+}
+
+module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
