@@ -19,7 +19,7 @@ const getJobs = async() => {
         'WHERE `jobs`.`id` = ' + 4 + ';'
     ));
 
-    
+
 
 }
 
