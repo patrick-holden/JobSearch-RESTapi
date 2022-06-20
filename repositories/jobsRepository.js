@@ -103,6 +103,51 @@ const getSearchJobs = async (jobSearch) => {
     return allSearchJobs;
 }
 
+
+const getFilterJobs = async (query) => {
+    let type = query.type;
+    let salary1 = query.salary1;
+    let salary2 = query.salary2;
+    let skill = query.skill;
+    console.log('Repository: getFilterJob ' + type + salary1 + salary2);
+    const allFilterRecords = await dbService.connectToDb().then((db) => db.query(
+        'SELECT ' +
+        '`jobs`.`id`, ' +
+        '`jobs`.`job_title`, ' +
+        '`jobs`.`company`, ' +
+        '`jobs`.`logo`,' +
+        '`jobs`.`job_description`, ' +
+        '`jobs`.`salary`,' +
+        '`jobs`.`posted`,' +
+        '`jobs`.`type`, ' +
+        '`skills`.`skill` ' +
+        ' FROM `jobs` ' +
+        'LEFT JOIN ' +
+        '`jobs_skills` ' +
+        'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
+        'LEFT JOIN `skills` ' +
+        'ON `jobs_skills`.`skill_id` = `skills`.`id` ' +
+        'WHERE `jobs_skills`.`skill_id` = ' + skill +
+        ' AND `jobs`.`type` = "' + type + '"' + '' +
+        ' AND `jobs`.`salary` BETWEEN "' + salary1 + '"  AND "' + salary2 + '" ;'));
+
+
+    let allFilterJobs = [];
+    let previousId = -1;
+    allFilterRecords.forEach((record) => {
+        let lastJob = allFilterJobs[allFilterJobs.length-1];
+        if (record['id'] !== previousId) {
+            previousId = record['id'];
+            record['skill'] = [record['skill']];
+            allFilterJobs.push(record);
+        } else {
+            lastJob['skill'].push(record['skill']);
+        }})
+
+    return allFilterJobs;
+}
+
+module.exports.getFilterJobs = getFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
 module.exports.getSearchJobs = getSearchJobs;

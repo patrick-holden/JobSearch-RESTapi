@@ -15,6 +15,12 @@ const getSearchJobs = async (jobSearch) => {
     return await jobsRepository.getSearchJobs(jobSearch);
 }
 
+const getFilterJobs = async (query) => {
+    console.log('Service: getFilterJobs ' + query);
+    return await jobsRepository.getFilterJobs(query);
+}
+
+module.exports.getFilterJobs = getFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
 module.exports.getSearchJobs = getSearchJobs;
