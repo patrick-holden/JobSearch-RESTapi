@@ -119,7 +119,7 @@ const getSearchJobs = async (jobSearch) => {
             previousId = record['id'];
             record['skill'] = [record['skill']];
             allSearchJobs.push(record);
-        } else {
+        } else { 
             lastJob['skill'].push(record['skill']);
         }
     })
