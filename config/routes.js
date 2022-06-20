@@ -4,7 +4,7 @@ const jobsController = require('../controllers/jobsController');
 const routes = (app) => {
     app.get('/jobs', jobsController.getJobs);
     // app.get('/jobs/:jobId', jobsController.getJob);
-    app.get('/jobs/search/:jobsearch', jobsController.getSearchJobs);
+    // app.get('/jobs/search/:jobsearch', jobsController.getSearchJobs);
     app.get('/jobs/admin/:term', (req, res) => {res.send('admin')});
     app.get('/jobs/filter/', jobsController.getFilterJobs);
     app.get('*', (req, res) => {

@@ -18,20 +18,22 @@ const getJob = (req, res) => {
     });
 }
 
-const getSearchJobs = (req, res) => {
-    let jobSearch = req.params.jobsearch;
-    console.log(jobSearch);
-    console.log('Controller: getSearchJobs');
-    jobsService.getSearchJobs(jobSearch).then((searchedJobs) => res.json(searchedJobs));
-}
+// const getSearchJobs = (req, res) => {
+//
+//     console.log(jobSearch);
+//     console.log('Controller: getSearchJobs');
+//     jobsService.getSearchJobs(jobSearch).then((searchedJobs) => res.json(searchedJobs));
+// }
 
 const getFilterJobs = (req, res) => {
+    let jobSearch = req.query.search;
     let type = req.query.type;
     let salary1 = parseInt(req.query.salary1);
     let salary2 = parseInt(req.query.salary2);
     let skill = parseInt(req.query.skill);
-    console.log(`Type is ${type}, salary1 is ${salary1}, salary2 is ${salary2}`);
+    console.log(`Search is ${jobSearch}, type is ${type}, salary1 is ${salary1}, salary2 is ${salary2}`);
     let query = {
+        jobSearch: jobSearch,
         type: type,
         salary1: salary1,
         salary2: salary2,
@@ -45,4 +47,4 @@ const getFilterJobs = (req, res) => {
 module.exports.getFilterJobs = getFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
-module.exports.getSearchJobs = getSearchJobs;
+// module.exports.getSearchJobs = getSearchJobs;
