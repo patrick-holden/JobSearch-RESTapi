@@ -79,10 +79,15 @@ const getSearchAndFilterJobs = async (query) => {
     let skill = query.skill;
     console.log('Repository: getFilterJob ' + type + salary1 + salary2);
 
-    const searchTerms = jobSearch.split(" ")
-    // const results = [];
+    let searchTerms;
     let searchParams = [];
 
+    if (jobSearch !== undefined) {
+        searchTerms = jobSearch.split(" ")
+        // const results = [];
+        } else {
+        searchTerms = '';
+    }
 
     let sql = 'SELECT `jobs`.`id`, ' +
       '`jobs`.`job_title`, ' +
@@ -98,8 +103,11 @@ const getSearchAndFilterJobs = async (query) => {
       'LEFT JOIN `skills` ' +
       'ON `jobs_skills`.`skill_id` = `skills`.`id`';
 
-    if (searchTerms.length > 0) {
+    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary1) && !isNaN(salary2))) {
         sql += ' WHERE (';
+    }
+
+    if (searchTerms.length > 0) {
         searchTerms.forEach((term) => {
             sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
             term = '%' + term + '%';
@@ -109,9 +117,7 @@ const getSearchAndFilterJobs = async (query) => {
     }
     sql += ')';
 
-    sql = sql.replace('WHERE (OR', 'WHERE (');
-
-    if (skill !== undefined) {
+    if (!isNaN(skill)) {
         sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
     }
 
@@ -122,6 +128,11 @@ const getSearchAndFilterJobs = async (query) => {
     if (!isNaN(salary1) && !isNaN(salary2)) {
         sql += " AND `jobs`.`salary` BETWEEN '" + salary1 + "' AND '" + salary2 + "'";
     }
+
+    console.log(sql);
+
+    sql = sql.replace('WHERE (OR', 'WHERE (');
+    sql = sql.replace('WHERE () AND', 'WHERE');
 
     sql += ';';
 
