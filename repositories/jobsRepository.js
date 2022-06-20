@@ -31,7 +31,7 @@ const getJobs = async() => {
     }})
 
     return allJobs;
-    
+
 }
 
 const getJob = async (id) => {
