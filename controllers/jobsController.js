@@ -25,7 +25,7 @@ const getJob = (req, res) => {
 //     jobsService.getSearchJobs(jobSearch).then((searchedJobs) => res.json(searchedJobs));
 // }
 
-const getFilterJobs = (req, res) => {
+const getSearchAndFilterJobs = (req, res) => {
     let jobSearch = req.query.search;
     let type = req.query.type;
     let salary1 = parseInt(req.query.salary1);
@@ -40,11 +40,11 @@ const getFilterJobs = (req, res) => {
         skill: skill,
     }
     console.log(query);
-    jobsService.getFilterJobs(query).then((query) => res.json(query));
+    jobsService.getSearchAndFilterJobs(query).then((query) => res.json(query));
 
 }
 
-module.exports.getFilterJobs = getFilterJobs;
+module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
 // module.exports.getSearchJobs = getSearchJobs;

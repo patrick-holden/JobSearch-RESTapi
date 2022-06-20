@@ -32,7 +32,6 @@ const getJobs = async () => {
     })
 
     return allJobs;
-
 }
 
 const getJob = async (id) => {
@@ -72,51 +71,7 @@ const getJob = async (id) => {
     return allJobData;
 }
 
-// const getSearchJobs = async (jobSearch) => {
-//     console.log('Repository: getSearchJob ' + jobSearch);
-//     const searchTerms = jobSearch.split(" ")
-//     // const results = [];
-//     let searchParams = [];
-//
-//     let sql = 'SELECT `jobs`.`id`, ' +
-//         '`jobs`.`job_title`, ' +
-//         '`jobs`.`company`, ' +
-//         '`jobs`.`logo`,' +
-//         '`jobs`.`salary`,' +
-//         '`jobs`.`type`, ' +
-//         '`skills`.`skill` ' +
-//         'FROM `jobs` ' +
-//         'LEFT JOIN ' +
-//         '`jobs_skills` ' +
-//         'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
-//         'LEFT JOIN `skills` ' +
-//         'ON `jobs_skills`.`skill_id` = `skills`.`id`';
-//
-//
-//
-//
-//
-//     const allSearchRecords = await dbService.connectToDb().then((db) => db.query(
-//         sql, searchParams));
-//
-//     let allSearchJobs = [];
-//     let previousId = -1;
-//     allSearchRecords.forEach((record) => {
-//         let lastJob = allSearchJobs[allSearchJobs.length - 1];
-//         if (record['id'] !== previousId) {
-//             previousId = record['id'];
-//             record['skill'] = [record['skill']];
-//             allSearchJobs.push(record);
-//         } else {
-//             lastJob['skill'].push(record['skill']);
-//         }
-//     })
-//
-//     return allSearchJobs;
-// }
-
-
-const getFilterJobs = async (query) => {
+const getSearchAndFilterJobs = async (query) => {
     let jobSearch = query.jobSearch;
     let type = query.type;
     let salary1 = query.salary1;
@@ -144,7 +99,7 @@ const getFilterJobs = async (query) => {
       'ON `jobs_skills`.`skill_id` = `skills`.`id`';
 
     if (searchTerms.length > 0) {
-        sql += ' WHERE ';
+        sql += ' WHERE (';
         searchTerms.forEach((term) => {
             sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
             term = '%' + term + '%';
@@ -152,19 +107,20 @@ const getFilterJobs = async (query) => {
             searchParams.push(term);
         })
     }
+    sql += ')';
 
-    sql = sql.replace('WHERE OR', 'WHERE ');
+    sql = sql.replace('WHERE (OR', 'WHERE (');
 
-    if (skill !== null) {
-        sql += " OR `jobs_skills`.`skill_id` = '" + skill + "'";
+    if (skill !== undefined) {
+        sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
     }
 
-    if (type !== null) {
-       sql += " OR `jobs`.`type` = '" + type +  "'";
+    if (type !== undefined) {
+       sql += " AND `jobs`.`type` = '" + type +  "'";
     }
 
-    if (salary1 !== null && salary2 !== null) {
-        sql += " OR `jobs`.`salary` BETWEEN '" + salary1 + "' AND '" + salary2 + "'";
+    if (!isNaN(salary1) && !isNaN(salary2)) {
+        sql += " AND `jobs`.`salary` BETWEEN '" + salary1 + "' AND '" + salary2 + "'";
     }
 
     sql += ';';
@@ -195,7 +151,7 @@ const getFilterJobs = async (query) => {
     return allFilterJobs;
 }
 
-module.exports.getFilterJobs = getFilterJobs;
+module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
 // module.exports.getSearchJobs = getSearchJobs;
