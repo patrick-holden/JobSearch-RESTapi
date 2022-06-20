@@ -86,7 +86,8 @@ const getSearchJobs = async (jobSearch) => {
         'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
         'LEFT JOIN `skills` ' +
         'ON `jobs_skills`.`skill_id` = `skills`.`id`' +
-        'WHERE `jobs`.`job_title` LIKE "%' + jobSearch + '%";'));
+        'WHERE `jobs`.`job_title` LIKE ? ' +
+        'OR `jobs`.`job_description` LIKE ?;', ['%' + jobSearch + '%', '%' + jobSearch + '%']));
 
     let allSearchJobs = [];
     let previousId = -1;
