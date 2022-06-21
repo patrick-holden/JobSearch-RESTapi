@@ -31,7 +31,6 @@ const getSearchAndFilterJobs = (req, res) => {
     let command = req.query.command;
     let salary = parseInt(req.query.salary);
     let skill = parseInt(req.query.skill);
-    console.log(`Search is ${search}, type is ${type}, command is ${command}, salary is ${salary}`);
 
     let query = {
         search: search,
@@ -40,13 +39,6 @@ const getSearchAndFilterJobs = (req, res) => {
         salary: salary,
         skill: skill,
     }
-
-    // for (const key in req.query) {
-    //     if(!query.hasOwnProperty(key)) {
-    //         res.json(httpResponseService(400,"Invalid"))
-    //     }
-    // }
-
 
     jobsService.getSearchAndFilterJobs(query, req, res).then((query) => {
         if (query.length === 0) {

@@ -138,25 +138,13 @@ const getSearchAndFilterJobs = async (query) => {
         }
     }
 
-
-    console.log(sql);
-
     sql = sql.replace('WHERE (OR', 'WHERE (');
     sql = sql.replace('WHERE () AND', 'WHERE');
 
     sql += ';';
 
-    console.log(skill);
-    console.log(type);
-    console.log(command);
-    console.log(order);
-    console.log(salary);
-    console.log(sql);
-    console.log(searchParams);
-
     const allFilterRecords = await dbService.connectToDb().then((db) => db.query(
       sql, searchParams));
-
 
     let allFilterJobs = [];
     let previousId = -1;
@@ -176,4 +164,3 @@ const getSearchAndFilterJobs = async (query) => {
 module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
-// module.exports.getSearchJobs = getSearchJobs;

@@ -1,5 +1,9 @@
-const httpResponse = (statusCode = 500, message = "Error", success = false, results = []) => {
-
+const httpResponse = (
+    statusCode = 500,
+    message = "Error",
+    success = false,
+    results = []
+    ) => {
     return {
         statusCode: statusCode,
         message: message,
