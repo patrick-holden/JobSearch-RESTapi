@@ -72,7 +72,7 @@ const getJob = async (id) => {
 }
 
 const getSearchAndFilterJobs = async (query) => {
-    let jobSearch = query.jobSearch;
+    let search = query.search;
     let type = query.type;
     let command = query.command;
     let salary = query.salary;
@@ -89,9 +89,10 @@ const getSearchAndFilterJobs = async (query) => {
     let searchTerms;
     let searchParams = [];
 
-    if (jobSearch !== undefined) {
-        searchTerms = jobSearch.split(" ")
-        // const results = [];
+    console.log('job search -' + search)
+
+    if (search) {
+        searchTerms = search.split(" ")
         } else {
         searchTerms = '';
     }
@@ -112,29 +113,31 @@ const getSearchAndFilterJobs = async (query) => {
 
     if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary))) {
         sql += ' WHERE (';
+
+        if (searchTerms.length > 0) {
+            searchTerms.forEach((term) => {
+                sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
+                term = '%' + term + '%';
+                searchParams.push(term);
+                searchParams.push(term);
+            })
+        }
+
+        sql += ')';
+
+        if (!isNaN(skill)) {
+            sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
+        }
+
+        if (type !== undefined) {
+            sql += " AND `jobs`.`type` = '" + type +  "'";
+        }
+
+        if (!isNaN(salary)) {
+            sql += " AND `jobs`.`salary` " + order + " '" +  salary + "'";
+        }
     }
 
-    if (searchTerms.length > 0) {
-        searchTerms.forEach((term) => {
-            sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
-            term = '%' + term + '%';
-            searchParams.push(term);
-            searchParams.push(term);
-        })
-    }
-    sql += ')';
-
-    if (!isNaN(skill)) {
-        sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
-    }
-
-    if (type !== undefined) {
-       sql += " AND `jobs`.`type` = '" + type +  "'";
-    }
-
-    if (!isNaN(salary)) {
-        sql += " AND `jobs`.`salary` " + order + " '" +  salary + "'";
-    }
 
     console.log(sql);
 

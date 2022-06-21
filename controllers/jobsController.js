@@ -26,22 +26,30 @@ const getJob = (req, res) => {
 }
 
 const getSearchAndFilterJobs = (req, res) => {
-    let jobSearch = req.query.search;
+    let search = req.query.search;
     let type = req.query.type;
     let command = req.query.command;
     let salary = parseInt(req.query.salary);
     let skill = parseInt(req.query.skill);
-    console.log(`Search is ${jobSearch}, type is ${type}, command is ${command}, salary is ${salary}`);
+    console.log(`Search is ${search}, type is ${type}, command is ${command}, salary is ${salary}`);
+
     let query = {
-        jobSearch: jobSearch,
+        search: search,
         type: type,
         command: command,
         salary: salary,
         skill: skill,
     }
-    console.log(query);
-    jobsService.getSearchAndFilterJobs(query).then((query) => {
-        if(query.length === 0) {
+
+    // for (const key in req.query) {
+    //     if(!query.hasOwnProperty(key)) {
+    //         res.json(httpResponseService(400,"Invalid"))
+    //     }
+    // }
+
+
+    jobsService.getSearchAndFilterJobs(query, req, res).then((query) => {
+        if (query.length === 0) {
             res.json(httpResponseService(res.statusCode,'No jobs found',true, query))
         } else {
             res.json(httpResponseService(res.statusCode, 'success', true, query))
