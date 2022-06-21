@@ -72,7 +72,7 @@ const getJob = async (id) => {
 }
 
 const getSearchAndFilterJobs = async (query) => {
-    let jobSearch = query.jobSearch;
+    let search = query.search;
     let type = query.type;
     let command = query.command;
     let salary = query.salary;
@@ -89,9 +89,10 @@ const getSearchAndFilterJobs = async (query) => {
     let searchTerms;
     let searchParams = [];
 
-    if (jobSearch !== undefined) {
-        searchTerms = jobSearch.split(" ")
-        // const results = [];
+    console.log('job search -' + search)
+
+    if (search) {
+        searchTerms = search.split(" ")
         } else {
         searchTerms = '';
     }
@@ -112,48 +113,38 @@ const getSearchAndFilterJobs = async (query) => {
 
     if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary))) {
         sql += ' WHERE (';
-    }
 
-    if (searchTerms.length > 0) {
-        searchTerms.forEach((term) => {
-            sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
-            term = '%' + term + '%';
-            searchParams.push(term);
-            searchParams.push(term);
-        })
-    }
-    sql += ')';
+        if (searchTerms.length > 0) {
+            searchTerms.forEach((term) => {
+                sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
+                term = '%' + term + '%';
+                searchParams.push(term);
+                searchParams.push(term);
+            })
+        }
 
-    if (!isNaN(skill)) {
-        sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
-    }
+        sql += ')';
 
-    if (type !== undefined) {
-       sql += " AND `jobs`.`type` = '" + type +  "'";
-    }
+        if (!isNaN(skill)) {
+            sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
+        }
 
-    if (!isNaN(salary)) {
-        sql += " AND `jobs`.`salary` " + order + " '" +  salary + "'";
-    }
+        if (type !== undefined) {
+            sql += " AND `jobs`.`type` = '" + type +  "'";
+        }
 
-    console.log(sql);
+        if (!isNaN(salary)) {
+            sql += " AND `jobs`.`salary` " + order + " '" +  salary + "'";
+        }
+    }
 
     sql = sql.replace('WHERE (OR', 'WHERE (');
     sql = sql.replace('WHERE () AND', 'WHERE');
 
     sql += ';';
 
-    console.log(skill);
-    console.log(type);
-    console.log(command);
-    console.log(order);
-    console.log(salary);
-    console.log(sql);
-    console.log(searchParams);
-
     const allFilterRecords = await dbService.connectToDb().then((db) => db.query(
       sql, searchParams));
-
 
     let allFilterJobs = [];
     let previousId = -1;
@@ -173,4 +164,3 @@ const getSearchAndFilterJobs = async (query) => {
 module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
-// module.exports.getSearchJobs = getSearchJobs;
