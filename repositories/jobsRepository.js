@@ -32,7 +32,6 @@ const getJobs = async () => {
     })
 
     return allJobs;
-
 }
 
 const getJob = async (id) => {
@@ -72,61 +71,96 @@ const getJob = async (id) => {
     return allJobData;
 }
 
-const getSearchJobs = async (jobSearch) => {
-    console.log('Repository: getSearchJob ' + jobSearch);
-    const searchTerms = jobSearch.split(" ")
-    // const results = [];
-    let searchParams = [];
+const getSearchAndFilterJobs = async (query) => {
+    let search = query.search;
+    let type = query.type;
+    let command = query.command;
+    let salary = query.salary;
+    let skill = query.skill;
+    console.log('Repository: getFilterJob ' + type + command + salary);
 
-    let sql = 'SELECT `jobs`.`id`, ' +
-        '`jobs`.`job_title`, ' +
-        '`jobs`.`company`, ' +
-        '`jobs`.`logo`,' +
-        '`jobs`.`salary`,' +
-        '`jobs`.`type`, ' +
-        '`skills`.`skill` ' +
-        'FROM `jobs` ' +
-        'LEFT JOIN ' +
-        '`jobs_skills` ' +
-        'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
-        'LEFT JOIN `skills` ' +
-        'ON `jobs_skills`.`skill_id` = `skills`.`id`';
-
-    if (searchTerms.length > 0) {
-        sql += ' WHERE ';
-        searchTerms.forEach((term) => {
-            sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ? ';
-            term = '%' + term + '%';
-            searchParams.push(term);
-            searchParams.push(term);
-        })
+    let order = '';
+    if (command === 'above') {
+        order = '>';
+    } else {
+        order = '<';
     }
 
-    sql = sql.replace('WHERE OR', 'WHERE ');
+    let searchTerms;
+    let searchParams = [];
+
+    console.log('job search -' + search)
+
+    if (search) {
+        searchTerms = search.split(" ")
+        } else {
+        searchTerms = '';
+    }
+
+    let sql = 'SELECT `jobs`.`id`, ' +
+      '`jobs`.`job_title`, ' +
+      '`jobs`.`company`, ' +
+      '`jobs`.`logo`,' +
+      '`jobs`.`salary`,' +
+      '`jobs`.`type`, ' +
+      '`skills`.`skill` ' +
+      'FROM `jobs` ' +
+      'LEFT JOIN ' +
+      '`jobs_skills` ' +
+      'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
+      'LEFT JOIN `skills` ' +
+      'ON `jobs_skills`.`skill_id` = `skills`.`id`';
+
+    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary))) {
+        sql += ' WHERE (';
+
+        if (searchTerms.length > 0) {
+            searchTerms.forEach((term) => {
+                sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
+                term = '%' + term + '%';
+                searchParams.push(term);
+                searchParams.push(term);
+            })
+        }
+
+        sql += ')';
+
+        if (!isNaN(skill)) {
+            sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
+        }
+
+        if (type !== undefined) {
+            sql += " AND `jobs`.`type` = '" + type +  "'";
+        }
+
+        if (!isNaN(salary)) {
+            sql += " AND `jobs`.`salary` " + order + " '" +  salary + "'";
+        }
+    }
+
+    sql = sql.replace('WHERE (OR', 'WHERE (');
+    sql = sql.replace('WHERE () AND', 'WHERE');
+
     sql += ';';
 
-    console.log(searchParams);
-    console.log(sql);
+    const allFilterRecords = await dbService.connectToDb().then((db) => db.query(
+      sql, searchParams));
 
-    const allSearchRecords = await dbService.connectToDb().then((db) => db.query(
-        sql, searchParams));
-
-    let allSearchJobs = [];
+    let allFilterJobs = [];
     let previousId = -1;
-    allSearchRecords.forEach((record) => {
-        let lastJob = allSearchJobs[allSearchJobs.length - 1];
+    allFilterRecords.forEach((record) => {
+        let lastJob = allFilterJobs[allFilterJobs.length-1];
         if (record['id'] !== previousId) {
             previousId = record['id'];
             record['skill'] = [record['skill']];
-            allSearchJobs.push(record);
+            allFilterJobs.push(record);
         } else {
             lastJob['skill'].push(record['skill']);
-        }
-    })
+        }})
 
-    return allSearchJobs;
+    return allFilterJobs;
 }
 
+module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
-module.exports.getSearchJobs = getSearchJobs;
