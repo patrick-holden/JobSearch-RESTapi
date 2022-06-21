@@ -1,30 +1,53 @@
 const jobsService = require('../services/jobsService');
+const httpResponseService = require('../services/httpResponseService');
 
 const getJobs = (req, res) => {
     console.log('Controller: getJobs');
-    jobsService.getJobs().then((allJobs) => res.json(allJobs));
+    jobsService.getJobs().then((allJobs) => {
+        if(allJobs.length === 0) {
+            res.json(httpResponseService(res.statusCode, 'No jobs found',true, allJobs))
+        } else {
+            res.json(httpResponseService(res.statusCode,'Success',true,  allJobs));
+        }})
 }
 
 const getJob = (req, res) => {
     let jobId = parseInt(req.params.jobId);
     console.log(jobId);
-    console.log('Controller: getProduct');
+    console.log('Controller: getJob');
     jobsService.getJob(jobId).then((job) => {
         if (job.length === 0) {
-            res.json(JSON.stringify({message: 'No such job'}))
+            res.json(httpResponseService(res.statusCode,'No job found',true, job))
         } else {
-            res.json(job)
+            res.json(httpResponseService(res.statusCode,'success',true, job))
         }
     });
 }
 
-const getSearchJobs = (req, res) => {
-    let jobSearch = req.params.term;
-    console.log(jobSearch);
-    console.log('Controller: getSearchJobs');
-    jobsService.getSearchJobs(jobSearch).then((searchedJobs) => res.json(searchedJobs));
+const getSearchAndFilterJobs = (req, res) => {
+    let search = req.query.search;
+    let type = req.query.type;
+    let command = req.query.command;
+    let salary = parseInt(req.query.salary);
+    let skill = parseInt(req.query.skill);
+
+    let query = {
+        search: search,
+        type: type,
+        command: command,
+        salary: salary,
+        skill: skill,
+    }
+
+    jobsService.getSearchAndFilterJobs(query, req, res).then((query) => {
+        if (query.length === 0) {
+            res.json(httpResponseService(res.statusCode,'No jobs found',true, query))
+        } else {
+            res.json(httpResponseService(res.statusCode, 'success', true, query))
+        }
+    });
 }
 
+module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
-module.exports.getSearchJobs = getSearchJobs;
