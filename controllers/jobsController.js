@@ -1,8 +1,15 @@
 const jobsService = require('../services/jobsService');
+const httpResponseService = require('../services/httpResponseService');
+
 
 const getJobs = (req, res) => {
     console.log('Controller: getJobs');
-    jobsService.getJobs().then((allJobs) => res.json(allJobs));
+    jobsService.getJobs().then((allJobs) => {
+        if(allJobs.length === 0) {
+            res.json(httpResponseService(res.statusCode, 'No jobs found',true, allJobs))
+        } else {
+            res.json(httpResponseService(res.statusCode,'Success',true,  allJobs));
+        }})
 }
 
 const getJob = (req, res) => {
@@ -11,19 +18,12 @@ const getJob = (req, res) => {
     console.log('Controller: getJob');
     jobsService.getJob(jobId).then((job) => {
         if (job.length === 0) {
-            res.json(JSON.stringify({message: 'No such job'}))
+            res.json(httpResponseService(res.statusCode,'No job found',true, job))
         } else {
-            res.json(job)
+            res.json(httpResponseService(res.statusCode,'success',true, job))
         }
     });
 }
-
-// const getSearchJobs = (req, res) => {
-//
-//     console.log(jobSearch);
-//     console.log('Controller: getSearchJobs');
-//     jobsService.getSearchJobs(jobSearch).then((searchedJobs) => res.json(searchedJobs));
-// }
 
 const getSearchAndFilterJobs = (req, res) => {
     let jobSearch = req.query.search;
@@ -40,11 +40,16 @@ const getSearchAndFilterJobs = (req, res) => {
         skill: skill,
     }
     console.log(query);
-    jobsService.getSearchAndFilterJobs(query).then((query) => res.json(query));
+    jobsService.getSearchAndFilterJobs(query).then((query) => {
+        if(query.length === 0) {
+            res.json(httpResponseService(res.statusCode,'No jobs found',true, query))
+        } else {
+            res.json(httpResponseService(res.statusCode, 'success', true, query))
+        }
+    });
 
 }
 
 module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
-// module.exports.getSearchJobs = getSearchJobs;
