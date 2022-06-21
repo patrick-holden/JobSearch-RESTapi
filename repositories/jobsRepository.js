@@ -32,7 +32,6 @@ const getJobs = async () => {
     })
 
     return allJobs;
-
 }
 
 const getJob = async (id) => {
@@ -72,88 +71,80 @@ const getJob = async (id) => {
     return allJobData;
 }
 
-const getSearchJobs = async (jobSearch) => {
-    console.log('Repository: getSearchJob ' + jobSearch);
-    const searchTerms = jobSearch.split(" ")
-    // const results = [];
-    let searchParams = [];
-
-    let sql = 'SELECT `jobs`.`id`, ' +
-        '`jobs`.`job_title`, ' +
-        '`jobs`.`company`, ' +
-        '`jobs`.`logo`,' +
-        '`jobs`.`salary`,' +
-        '`jobs`.`type`, ' +
-        '`skills`.`skill` ' +
-        'FROM `jobs` ' +
-        'LEFT JOIN ' +
-        '`jobs_skills` ' +
-        'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
-        'LEFT JOIN `skills` ' +
-        'ON `jobs_skills`.`skill_id` = `skills`.`id`';
-
-    if (searchTerms.length > 0) {
-        sql += ' WHERE ';
-        searchTerms.forEach((term) => {
-            sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ? ';
-            term = '%' + term + '%';
-            searchParams.push(term);
-            searchParams.push(term);
-        })
-    }
-
-    sql = sql.replace('WHERE OR', 'WHERE ');
-    sql += ';';
-
-    console.log(searchParams);
-    console.log(sql);
-
-    const allSearchRecords = await dbService.connectToDb().then((db) => db.query(
-        sql, searchParams));
-
-    let allSearchJobs = [];
-    let previousId = -1;
-    allSearchRecords.forEach((record) => {
-        let lastJob = allSearchJobs[allSearchJobs.length - 1];
-        if (record['id'] !== previousId) {
-            previousId = record['id'];
-            record['skill'] = [record['skill']];
-            allSearchJobs.push(record);
-        } else { 
-            lastJob['skill'].push(record['skill']);
-        }
-    })
-
-    return allSearchJobs;
-}
-
-
-const getFilterJobs = async (query) => {
+const getSearchAndFilterJobs = async (query) => {
+    let jobSearch = query.jobSearch;
     let type = query.type;
     let salary1 = query.salary1;
     let salary2 = query.salary2;
     let skill = query.skill;
     console.log('Repository: getFilterJob ' + type + salary1 + salary2);
+
+    let searchTerms;
+    let searchParams = [];
+
+    if (jobSearch !== undefined) {
+        searchTerms = jobSearch.split(" ")
+        // const results = [];
+        } else {
+        searchTerms = '';
+    }
+
+    let sql = 'SELECT `jobs`.`id`, ' +
+      '`jobs`.`job_title`, ' +
+      '`jobs`.`company`, ' +
+      '`jobs`.`logo`,' +
+      '`jobs`.`salary`,' +
+      '`jobs`.`type`, ' +
+      '`skills`.`skill` ' +
+      'FROM `jobs` ' +
+      'LEFT JOIN ' +
+      '`jobs_skills` ' +
+      'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
+      'LEFT JOIN `skills` ' +
+      'ON `jobs_skills`.`skill_id` = `skills`.`id`';
+
+    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary1) && !isNaN(salary2))) {
+        sql += ' WHERE (';
+    }
+
+    if (searchTerms.length > 0) {
+        searchTerms.forEach((term) => {
+            sql += 'OR `jobs`.`job_description` LIKE ? OR `jobs`.`job_title` LIKE ?';
+            term = '%' + term + '%';
+            searchParams.push(term);
+            searchParams.push(term);
+        })
+    }
+    sql += ')';
+
+    if (!isNaN(skill)) {
+        sql += " AND `jobs_skills`.`skill_id` = '" + skill + "'";
+    }
+
+    if (type !== undefined) {
+       sql += " AND `jobs`.`type` = '" + type +  "'";
+    }
+
+    if (!isNaN(salary1) && !isNaN(salary2)) {
+        sql += " AND `jobs`.`salary` BETWEEN '" + salary1 + "' AND '" + salary2 + "'";
+    }
+
+    console.log(sql);
+
+    sql = sql.replace('WHERE (OR', 'WHERE (');
+    sql = sql.replace('WHERE () AND', 'WHERE');
+
+    sql += ';';
+
+    console.log(skill);
+    console.log(type);
+    console.log(salary1);
+    console.log(salary2);
+    console.log(sql);
+    console.log(searchParams);
+
     const allFilterRecords = await dbService.connectToDb().then((db) => db.query(
-        'SELECT ' +
-        '`jobs`.`id`, ' +
-        '`jobs`.`job_title`, ' +
-        '`jobs`.`company`, ' +
-        '`jobs`.`logo`,' +
-        '`jobs`.`job_description`, ' +
-        '`jobs`.`salary`,' +
-        '`jobs`.`posted`,' +
-        '`jobs`.`type`, ' +
-        '`skills`.`skill` ' +
-        ' FROM `jobs` ' +
-        'LEFT JOIN ' +
-        '`jobs_skills` ' +
-        'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
-        'LEFT JOIN `skills` ' +
-        'ON `jobs_skills`.`skill_id` = `skills`.`id` ' +
-        'WHERE `jobs_skills`.`skill_id` = ' + skill +
-        ' AND `jobs`.`type` = "' + type + '"' + '' +
-        ' AND `jobs`.`salary` BETWEEN "' + salary1 + '"  AND "' + salary2 + '" ;'));
+      sql, searchParams));
 
 
     let allFilterJobs = [];
@@ -171,7 +162,7 @@ const getFilterJobs = async (query) => {
     return allFilterJobs;
 }
 
-module.exports.getFilterJobs = getFilterJobs;
+module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
 module.exports.getJob = getJob;
 module.exports.getJobs = getJobs;
-module.exports.getSearchJobs = getSearchJobs;
+// module.exports.getSearchJobs = getSearchJobs;
