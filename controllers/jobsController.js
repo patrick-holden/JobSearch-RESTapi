@@ -1,7 +1,6 @@
 const jobsService = require('../services/jobsService');
 const httpResponseService = require('../services/httpResponseService');
 
-
 const getJobs = (req, res) => {
     console.log('Controller: getJobs');
     jobsService.getJobs().then((allJobs) => {
@@ -47,7 +46,6 @@ const getSearchAndFilterJobs = (req, res) => {
             res.json(httpResponseService(res.statusCode, 'success', true, query))
         }
     });
-
 }
 
 module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
