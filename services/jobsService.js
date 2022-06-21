@@ -16,7 +16,7 @@ const getSearchAndFilterJobs = async (query, req, res) => {
     const search = query.search
 
     if(query.search) {
-        query.search = search.replace(/[^a-z0-9]/gi, "");
+        query.search = search.replace(/[^a-z0-9 ]/gi, "").trim();
     }
 
     // const invalidKeys = []
