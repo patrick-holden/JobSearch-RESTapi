@@ -28,15 +28,15 @@ const getJob = (req, res) => {
 const getSearchAndFilterJobs = (req, res) => {
     let jobSearch = req.query.search;
     let type = req.query.type;
-    let salary1 = parseInt(req.query.salary1);
-    let salary2 = parseInt(req.query.salary2);
+    let command = req.query.command;
+    let salary = parseInt(req.query.salary);
     let skill = parseInt(req.query.skill);
-    console.log(`Search is ${jobSearch}, type is ${type}, salary1 is ${salary1}, salary2 is ${salary2}`);
+    console.log(`Search is ${jobSearch}, type is ${type}, command is ${command}, salary is ${salary}`);
     let query = {
         jobSearch: jobSearch,
         type: type,
-        salary1: salary1,
-        salary2: salary2,
+        command: command,
+        salary: salary,
         skill: skill,
     }
     console.log(query);

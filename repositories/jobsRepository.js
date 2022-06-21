@@ -74,10 +74,17 @@ const getJob = async (id) => {
 const getSearchAndFilterJobs = async (query) => {
     let jobSearch = query.jobSearch;
     let type = query.type;
-    let salary1 = query.salary1;
-    let salary2 = query.salary2;
+    let command = query.command;
+    let salary = query.salary;
     let skill = query.skill;
-    console.log('Repository: getFilterJob ' + type + salary1 + salary2);
+    console.log('Repository: getFilterJob ' + type + command + salary);
+
+    let order = '';
+    if (command === 'above') {
+        order = '>';
+    } else {
+        order = '<';
+    }
 
     let searchTerms;
     let searchParams = [];
@@ -103,7 +110,7 @@ const getSearchAndFilterJobs = async (query) => {
       'LEFT JOIN `skills` ' +
       'ON `jobs_skills`.`skill_id` = `skills`.`id`';
 
-    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary1) && !isNaN(salary2))) {
+    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary))) {
         sql += ' WHERE (';
     }
 
@@ -125,8 +132,8 @@ const getSearchAndFilterJobs = async (query) => {
        sql += " AND `jobs`.`type` = '" + type +  "'";
     }
 
-    if (!isNaN(salary1) && !isNaN(salary2)) {
-        sql += " AND `jobs`.`salary` BETWEEN '" + salary1 + "' AND '" + salary2 + "'";
+    if (!isNaN(salary)) {
+        sql += " AND `jobs`.`salary` " + order + " '" +  salary + "'";
     }
 
     console.log(sql);
@@ -138,8 +145,9 @@ const getSearchAndFilterJobs = async (query) => {
 
     console.log(skill);
     console.log(type);
-    console.log(salary1);
-    console.log(salary2);
+    console.log(command);
+    console.log(order);
+    console.log(salary);
     console.log(sql);
     console.log(searchParams);
 
