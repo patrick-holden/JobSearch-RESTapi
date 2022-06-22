@@ -15,7 +15,8 @@ const getSearchAndFilterJobs = async (query, req, res) => {
     console.log('Service: getSearchAndFilterJobs ' + query);
     const search = query.search
 
-    if (query.search) {
+
+    if(query.search) {
         query.search = search.replace(/[^a-z0-9 ]/gi, "").trim();
     }
 
