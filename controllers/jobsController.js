@@ -40,14 +40,26 @@ const getSearchAndFilterJobs = (req, res) => {
         skill: skill,
     }
 
-    jobsService.getSearchAndFilterJobs(query, req, res).then((query) => {
-        if (query.length === 0) {
-            res.json(httpResponseService(res.statusCode,'No jobs found',true, query))
-        } else {
-            res.json(httpResponseService(res.statusCode, 'success', true, query))
+    const invalidKeys = []
+    for (const key in req.query) {
+        if(!query.hasOwnProperty(key)) {
+            invalidKeys.push(key)
         }
-    });
+    }
 
+    console.log(invalidKeys.length);
+
+    if(invalidKeys.length > 0) {
+        res.json(httpResponseService(400,"Invalid Request"))
+    } else {
+        jobsService.getSearchAndFilterJobs(query, req, res).then((query) => {
+            if (query.length === 0) {
+                res.json(httpResponseService(res.statusCode, 'No jobs found', true, query))
+            } else {
+                res.json(httpResponseService(res.statusCode, 'success', true, query))
+            }
+        });
+    }
 }
 
 module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
