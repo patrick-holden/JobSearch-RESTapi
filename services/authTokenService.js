@@ -78,5 +78,5 @@ const checkAdminToken = (req, res, next) => {
   next();
 }
 
-module.exports = checkPartnerToken;
-module.exports = checkAdminToken;
+module.exports.checkPartnerToken = checkPartnerToken;
+module.exports.checkAdminToken = checkAdminToken;
