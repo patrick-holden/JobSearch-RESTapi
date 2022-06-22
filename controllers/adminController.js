@@ -1,6 +1,5 @@
 const adminService = require('../services/adminService');
 const httpResponseService = require('../services/httpResponseService');
-const jobsService = require("../services/jobsService");
 
 const getAllJobsData = (req, res) => {
   console.log('Admin controller: getJobs');
