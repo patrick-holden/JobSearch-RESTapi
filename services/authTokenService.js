@@ -49,7 +49,7 @@ const checkAdminToken = (req, res, next) => {
     return res.status(401).send({auth: false, message: 'Credentials missing.'})
   }
 
-  console.log(accessCredentials[user][0]);
+  // console.log(accessCredentials[user][0]);
 
   if (!accessCredentials[user] || !accessCredentials[user][0]) {
     return res.status(401).send({auth: false, message: 'here i am.'})
