@@ -1,13 +1,12 @@
 const jobsRepository = require('../repositories/jobsRepository');
 const httpResponseService = require('../services/httpResponseService');
 
-const getJobs = async (query, req, res) => {
+const getJobs = async (query) => {
     console.log('Service: getJobs');
     // return await jobsRepository.getJobs();
     const search = query.search
 
-
-    if(query.search) {
+    if (query.search) {
         query.search = search.replace(/[^a-z0-9 ]/gi, "").trim();
     }
 

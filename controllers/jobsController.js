@@ -24,7 +24,7 @@ const getJobs = (req, res) => {
         skill: skill,
     }
 
-    jobsService.getJobs(query, req, res).then((query) => {
+    jobsService.getJobs(query).then((query) => {
         if (query.length === 0) {
             res.json(httpResponseService(res.statusCode, 'No jobs found', true, query))
         } else {
