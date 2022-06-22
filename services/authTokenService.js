@@ -1,27 +1,28 @@
 const dbService = require('./dbService.js');
 
-let credentials = {};
+let accessCredentials = {};
 
-const getAccess = async () => {
+const getAccessCredentials = async () => {
   console.log('Repository: getAccessCredentials');
-  const checkPass = await dbService.connectToDb().then((db) => db.query(
-    'SELECT `partners`.`name`, `partners`.`token` FROM `partners`;'
+  const dbCredentials = await dbService.connectToDb().then((db) => db.query(
+    'SELECT `partners`.`name`, `partners`.`token`, `partners`.`isAdmin` FROM `partners`;'
   ));
 
-  let credentials = {};
+  let accessCredentials = {};
 
-  for(let i in checkPass) {
-    credentials[checkPass[i]['name']] = checkPass[i]['token'];
+  for(let credential in dbCredentials) {
+    accessCredentials[dbCredentials[credential]['name']] = [dbCredentials[credential]['token'], dbCredentials[credential]['isAdmin']];
   }
-
-  return credentials;
+  console.log(dbCredentials);
+  console.log(accessCredentials);
+  return accessCredentials;
 }
 
-getAccess().then(checkPass => {
-  credentials = checkPass;
+getAccessCredentials().then(checkPass => {
+  accessCredentials = checkPass;
 });
 
-const tokenCheck = (req, res, next) => {
+const checkAccessToken = (req, res, next) => {
   const user =  req.headers['x-user-name'];
   const token =  req.headers['x-access-token'];
 
@@ -29,11 +30,16 @@ const tokenCheck = (req, res, next) => {
     return res.status(401).send({auth: false, message: 'Credentials missing.'})
   }
 
-  if (credentials[user] !== token) {
+  if (accessCredentials[user][0] !== token) {
     return res.send(401).send({auth: false, message: 'Invalid token provided.'})
   }
+
+  if (accessCredentials[user][1] !== 1) {
+    console.log("im not an admin");
+  }
+
 
   next();
 }
 
-module.exports = tokenCheck;
+module.exports = checkAccessToken;
