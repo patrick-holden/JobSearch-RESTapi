@@ -1,7 +1,6 @@
 const jobsService = require('../services/jobsService');
 const httpResponseService = require('../services/httpResponseService');
 
-
 const getJobs = (req, res) => {
     console.log('Controller: getJobs');
     jobsService.getJobs().then((allJobs) => {
@@ -40,18 +39,6 @@ const getSearchAndFilterJobs = (req, res) => {
         skill: skill,
     }
 
-    const invalidKeys = []
-    for (const key in req.query) {
-        if(!query.hasOwnProperty(key)) {
-            invalidKeys.push(key)
-        }
-    }
-
-    console.log(invalidKeys.length);
-
-    if(invalidKeys.length > 0) {
-        res.json(httpResponseService(400,"Invalid Request"))
-    } else {
         jobsService.getSearchAndFilterJobs(query, req, res).then((query) => {
             if (query.length === 0) {
                 res.json(httpResponseService(res.statusCode, 'No jobs found', true, query))
@@ -59,7 +46,7 @@ const getSearchAndFilterJobs = (req, res) => {
                 res.json(httpResponseService(res.statusCode, 'success', true, query))
             }
         });
-    }
+
 }
 
 module.exports.getSearchAndFilterJobs = getSearchAndFilterJobs;
