@@ -17,7 +17,8 @@ const getJobs = (req, res) => {
   }
 
   adminService.getAllJobsData(query, req, res).then((allJobs) => {
-    if(allJobs.length === 0) {
+
+    if(Object.keys(allJobs).length === 0) {
       res.json(httpResponseService(res.statusCode, 'No jobs found',true, allJobs))
     } else {
       res.json(httpResponseService(res.statusCode,'Success',true,  allJobs));

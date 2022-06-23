@@ -23,12 +23,17 @@ const getAllJobsData = async (query) => {
 
     let filledCount = filledJobs.length;
 
-    let allJobs = {
-        "filled job count": filledCount,
-        "filled jobs": filledJobs,
-        "unfilled job count": unfilledCount,
-        "unfilled jobs": unfilledJobs
-    };
+    let allJobs = {};
+
+    if(filledCount > 0 || unfilledCount > 0) {
+        allJobs = {
+            "filled job count": filledCount,
+            "filled jobs": filledJobs,
+            "unfilled job count": unfilledCount,
+            "unfilled jobs": unfilledJobs
+        }
+    }
+
     return allJobs;
 }
 

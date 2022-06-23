@@ -16,6 +16,7 @@ const getJobs = (req, res) => {
         skill: skill,
     }
 
+
     jobsService.getJobs(query).then((query) => {
         if(query === -1) {
             res.status(404).json(httpResponseService(res.statusCode,'Invalid Search',true))

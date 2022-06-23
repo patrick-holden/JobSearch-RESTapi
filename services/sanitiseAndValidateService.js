@@ -1,6 +1,5 @@
 const alphaNumericSearch = (query) => {
     const search = query.search
-
     const regexResult = /[^a-z0-9 ]/gi.test(search)
 
     if(regexResult) {
