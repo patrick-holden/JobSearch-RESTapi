@@ -6,7 +6,6 @@ const authTokenService = require("../services/authTokenService");
 
 const routes = (app) => {
     app.get('/jobs', authTokenService.checkPartnerToken, jobsController.getJobs);
-    // app.get('/jobs/query/', authTokenService.checkPartnerToken, jobsController.getSearchAndFilterJobs);
     app.get('/jobs/:jobId', authTokenService.checkPartnerToken, jobsController.getJob);
     app.get('/admin/jobs', authTokenService.checkAdminToken, adminController.getAllJobsData);
 

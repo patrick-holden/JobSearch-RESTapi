@@ -1,27 +1,16 @@
 const dbService = require('../services/dbService');
-const sqlEdit = require('../sqlEdit');
+const {sqlEdit} = require('./helperRepository');
+const {sortDuplicateJobs} = require("./helperRepository");
 
 const getAllJobsData = async (query) => {
-    console.log('Repository: getAllJobsData');
-    console.log(__dirname);
+    console.log('Admin Repository: getAllJobsData');
 
     let {sql, searchParams} = sqlEdit('jobs', query);
 
     const allUnfilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
         sql, searchParams));
 
-    let unfilledJobs = [];
-    let previousUnfilledId = -1;
-    allUnfilledFilterRecords.forEach((record) => {
-        let lastUnfilledJob = unfilledJobs[unfilledJobs.length - 1];
-        if (record['id'] !== previousUnfilledId) {
-            previousUnfilledId = record['id'];
-            record['skill'] = [record['skill']];
-            unfilledJobs.push(record);
-        } else {
-            lastUnfilledJob['skill'].push(record['skill']);
-        }
-    })
+    let unfilledJobs = sortDuplicateJobs(allUnfilledFilterRecords);
 
     let unfilledCount = unfilledJobs.length;
     console.log(unfilledCount);
@@ -33,18 +22,7 @@ const getAllJobsData = async (query) => {
     const allFilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
         sql, searchParams));
 
-    let filledJobs = [];
-    let previousFilledId = -1;
-    allFilledFilterRecords.forEach((record) => {
-        let lastFilledJob = filledJobs[filledJobs.length - 1];
-        if (record['id'] !== previousFilledId) {
-            previousFilledId = record['id'];
-            record['skill'] = [record['skill']];
-            filledJobs.push(record);
-        } else {
-            lastFilledJob['skill'].push(record['skill']);
-        }
-    })
+    let filledJobs = sortDuplicateJobs(allFilledFilterRecords);
 
     let filledCount = filledJobs.length;
     console.log(filledCount);
@@ -55,7 +33,6 @@ const getAllJobsData = async (query) => {
         "unfilled job count": unfilledCount,
         "unfilled jobs": unfilledJobs
     };
-    // console.log(allJobs);
     return allJobs;
 }
 

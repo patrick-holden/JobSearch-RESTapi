@@ -27,4 +27,3 @@ const getAllJobsData = (req, res) => {
 }
 
 module.exports.getAllJobsData = getAllJobsData;
-// module.exports.getSearchFilterAdminJobs = getSearchFilterAdminJobs;

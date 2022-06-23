@@ -1,5 +1,4 @@
 
-
 const sqlEdit = (table, query) => {
 
     let search = query.search;
@@ -7,7 +6,7 @@ const sqlEdit = (table, query) => {
     let command = query.command;
     let salary = query.salary;
     let skill = query.skill;
-    console.log('SQL EDIT ' + type + command + salary);
+    console.log('SQL Edit ' + type + command + salary);
 
     let order = '';
     if (command === 'above') {
@@ -60,11 +59,11 @@ const sqlEdit = (table, query) => {
         }
 
         if (type !== undefined) {
-            sql += " AND `jobs`.`type` = '" + type +  "'";
+            sql += " AND `" + table + "`.`type` = '" + type +  "'";
         }
 
         if (!isNaN(salary)) {
-            sql += " AND `jobs`.`salary` " + order + " '" +  salary + "'";
+            sql += " AND `" + table + "`.`salary` " + order + " '" +  salary + "'";
         }
     }
 
@@ -81,4 +80,25 @@ const sqlEdit = (table, query) => {
     };
 }
 
-module.exports = sqlEdit;
+const sortDuplicateJobs = (allRecords) => {
+
+    let allJobs = [];
+    let previousId = -1;
+    allRecords.forEach((record) => {
+        let lastJob = allJobs[allJobs.length - 1];
+        if (record['id'] !== previousId) {
+            previousId = record['id'];
+            record['skill'] = [record['skill']];
+            allJobs.push(record);
+        } else {
+            lastJob['skill'].push(record['skill']);
+        }
+    })
+
+    // console.log(`sortDuplicateJobs` + allJobs)
+
+    return allJobs;
+}
+
+module.exports.sortDuplicateJobs = sortDuplicateJobs;
+module.exports.sqlEdit = sqlEdit;
