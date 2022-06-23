@@ -21,7 +21,7 @@ const getJob = async (id) => {
         'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
         'LEFT JOIN `skills` ' +
         'ON `jobs_skills`.`skill_id` = `skills`.`id` ' +
-        'WHERE `jobs`.`id` = ' + id + ';'));
+        'WHERE `jobs`.`id` = ?;', id));
 
     return sortDuplicateJobs(allIdRecords);
 }
