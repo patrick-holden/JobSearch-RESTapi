@@ -1,5 +1,5 @@
 const jobsRepository = require('../repositories/jobsRepository');
-const httpResponseService = require('../services/httpResponseService');
+// const httpResponseService = require('../services/httpResponseService');
 
 const getJobs = async (query) => {
     console.log('Service: getJobs');

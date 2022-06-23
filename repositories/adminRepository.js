@@ -36,4 +36,22 @@ const getAllJobsData = async (query) => {
     return allJobs;
 }
 
+const postFilledJob = async (id) => {
+    console.log('hello')
+    const insertJob = await dbService.connectToDb().then((db) => db.query(
+        'INSERT INTO `filledjobs` ' +
+        'SELECT * FROM `jobs` ' +
+        'WHERE `jobs`.`id` = ?;', id));
+
+    let insertId = insertJob.insertId;
+
+    await dbService.connectToDb().then((db) => db.query(
+        'DELETE FROM `jobs` ' +
+        'WHERE `jobs`.`id` = ?;', id));
+
+    return insertId;
+}
+
+
 module.exports.getAllJobsData = getAllJobsData;
+module.exports.postFilledJob = postFilledJob;

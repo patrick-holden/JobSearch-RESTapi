@@ -1,6 +1,5 @@
 const express = require('express');
 const routes = require('./config/routes');
-// const checkAccessToken = require('./services/authTokenService');
 
 const app = express();
 const port = 3000;

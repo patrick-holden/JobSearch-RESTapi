@@ -26,4 +26,19 @@ const getAllJobsData = (req, res) => {
 
 }
 
+const postFilledJob = (req, res) => {
+  let jobId = parseInt(req.params.jobId);
+  console.log(jobId)
+  adminService.postFilledJob(jobId).then((id) => {
+    console.log(id)
+    let lastid = parseInt(id)
+    if (lastid !== jobId) {
+      res.json(httpResponseService(res.statusCode,'unsuccessful',true, ))
+    } else {
+      res.json(httpResponseService(res.statusCode,'success',true,))
+    }
+  });
+}
+
 module.exports.getAllJobsData = getAllJobsData;
+module.exports.postFilledJob = postFilledJob;
