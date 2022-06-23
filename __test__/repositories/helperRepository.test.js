@@ -58,5 +58,40 @@ describe('sqlEdit function', () => {
         })
     })
 
+    it('given jobs table and salary below 100000', () => {
+        const query = {
+            salary: '100000',
+            command: 'below',
+        }
+        expect(sqlEdit('jobs', query)).toStrictEqual({"searchParams": [],"sql": "SELECT `jobs`.`id`, `jobs`.`job_title`, `jobs`.`company`, `jobs`.`logo`,`jobs`.`salary`,`jobs`.`type`, `skills`.`skill` FROM `jobs` LEFT JOIN `jobs_skills` ON `jobs`.`id` = `jobs_skills`.`job_id` LEFT JOIN `skills` ON `jobs_skills`.`skill_id` = `skills`.`id` WHERE `jobs`.`salary` < '100000';"
+        })
+    })
+
+    it('given jobs table and salary over 100000', () => {
+        const query = {
+            salary: '100000',
+            command: 'above',
+        }
+        expect(sqlEdit('jobs', query)).toStrictEqual({"searchParams": [],"sql": "SELECT `jobs`.`id`, `jobs`.`job_title`, `jobs`.`company`, `jobs`.`logo`,`jobs`.`salary`,`jobs`.`type`, `skills`.`skill` FROM `jobs` LEFT JOIN `jobs_skills` ON `jobs`.`id` = `jobs_skills`.`job_id` LEFT JOIN `skills` ON `jobs_skills`.`skill_id` = `skills`.`id` WHERE `jobs`.`salary` > '100000';"
+        })
+    })
+
+    it('given jobs table and salary with no value', () => {
+        const query = {
+            salary: '',
+            command: 'above',
+        }
+        expect(sqlEdit('jobs', query)).toStrictEqual({"searchParams": [],"sql": "SELECT `jobs`.`id`, `jobs`.`job_title`, `jobs`.`company`, `jobs`.`logo`,`jobs`.`salary`,`jobs`.`type`, `skills`.`skill` FROM `jobs` LEFT JOIN `jobs_skills` ON `jobs`.`id` = `jobs_skills`.`job_id` LEFT JOIN `skills` ON `jobs_skills`.`skill_id` = `skills`.`id` WHERE `jobs`.`salary` > '';"
+        })
+    })
+
+    it('given jobs table and incomplete salary requirements', () => {
+        const query = {
+            salary: '100000',
+        }
+        expect(sqlEdit('jobs', query)).toStrictEqual({"searchParams": [],"sql": "SELECT `jobs`.`id`, `jobs`.`job_title`, `jobs`.`company`, `jobs`.`logo`,`jobs`.`salary`,`jobs`.`type`, `skills`.`skill` FROM `jobs` LEFT JOIN `jobs_skills` ON `jobs`.`id` = `jobs_skills`.`job_id` LEFT JOIN `skills` ON `jobs_skills`.`skill_id` = `skills`.`id`;"
+        })
+    })
+
 
 })
