@@ -1,9 +1,14 @@
 const adminRepository = require('../repositories/adminRepository');
-const httpResponseService = require('../services/httpResponseService');
 
-const getAllJobsData = async() => {
-  console.log('Service: getAllJobsData');
-  return await adminRepository.getAllJobsData();
+const getAllJobsData = async(query, req, res) => {
+  console.log('Admin Service: getAllJobsData');
+  const search = query.search
+
+  if(query.search) {
+    query.search = search.replace(/[^a-z0-9 ]/gi, "").trim();
+  }
+  return await adminRepository.getAllJobsData(query);
+
 }
 
 module.exports.getAllJobsData = getAllJobsData;
