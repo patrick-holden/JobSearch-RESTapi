@@ -11,7 +11,7 @@ const sqlEdit = (table, query) => {
     let order = '';
     if (command === 'above') {
         order = '>';
-    } else {
+    } else if (command === 'below') {
         order = '<';
     }
 
