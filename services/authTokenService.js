@@ -1,39 +1,58 @@
 const dbService = require('./dbService.js');
 
-let credentials = {};
+let accessCredentials = {};
 
-const getAccess = async () => {
-  console.log('Repository: getAccessCredentials');
-  const checkPass = await dbService.connectToDb().then((db) => db.query(
-    'SELECT `partners`.`name`, `partners`.`token` FROM `partners`;'
+const getAccessCredentials = async () => {
+  const dbCredentials = await dbService.connectToDb().then((db) => db.query(
+    'SELECT `partners`.`name`, `partners`.`token`, `partners`.`isAdmin` FROM `partners`;'
   ));
+  let accessCredentials = {};
 
-  let credentials = {};
-
-  for(let i in checkPass) {
-    credentials[checkPass[i]['name']] = checkPass[i]['token'];
+  for(let credential in dbCredentials) {
+    accessCredentials[dbCredentials[credential]['name']] = [dbCredentials[credential]['token'], dbCredentials[credential]['isAdmin']];
   }
-
-  return credentials;
+  console.log(accessCredentials);
+  return accessCredentials;
 }
 
-getAccess().then(checkPass => {
-  credentials = checkPass;
-});
-
-const tokenCheck = (req, res, next) => {
+const tokenCheck = (req, res) => {
   const user =  req.headers['x-user-name'];
   const token =  req.headers['x-access-token'];
 
   if (!token || !user) {
-    return res.status(401).send({auth: false, message: 'Credentials missing.'})
+    return res.status(401).send({auth: false, message: 'Please complete all login fields.'})
   }
 
-  if (credentials[user] !== token) {
-    return res.send(401).send({auth: false, message: 'Invalid token provided.'})
+  if (!accessCredentials[user] || !accessCredentials[user][0]) {
+    return res.status(401).send({auth: false, message: 'Access Denied.'})
+  }
+
+  if (accessCredentials[user][0] !== token) {
+    return res.status(401).send({auth: false, message: 'Access Denied.'})
+  }
+}
+
+getAccessCredentials().then(checkPass => {
+  accessCredentials = checkPass;
+});
+
+const checkPartnerToken = (req, res, next) => {
+  tokenCheck(req, res);
+
+  next();
+}
+
+const checkAdminToken = (req, res, next) => {
+  tokenCheck(req, res);
+
+  const user =  req.headers['x-user-name'];
+
+  if (accessCredentials[user][1] !== 1) {
+    return res.status(401).send({auth: false, message: 'Access Denied.'})
   }
 
   next();
 }
 
-module.exports = tokenCheck;
+module.exports.checkPartnerToken = checkPartnerToken;
+module.exports.checkAdminToken = checkAdminToken;
