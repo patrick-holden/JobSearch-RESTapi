@@ -37,7 +37,7 @@ const sqlEdit = (table, query) => {
         'LEFT JOIN `skills` ' +
         'ON `jobs_skills`.`skill_id` = `skills`.`id`';
 
-    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary))) {
+    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary) && command !== undefined)) {
         sql += ' WHERE (';
 
         if (searchTerms.length > 0) {

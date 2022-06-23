@@ -11,9 +11,12 @@ const alphaNumericSearch = (query) => {
 }
 
 const idIsNum = (id) => {
+
     if(isNaN(id)) {
         return -1
     }
+
+    return id;
 }
 
 module.exports.alphaNumericSearch = alphaNumericSearch

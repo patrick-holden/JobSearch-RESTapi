@@ -2,7 +2,7 @@ const helperRepository = require('../../repositories/helperRepository');
 const {sqlEdit} = require("../../repositories/helperRepository");
 
 describe('sqlEdit function', () => {
-    it('given jobs table and skill filter 5', () => {
+    it('given jobs table and skill filter', () => {
         const query = {
             skill: '5'
         }
