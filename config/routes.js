@@ -7,8 +7,8 @@ const invalidRequestController = require('../controllers/invalidRequestControlle
 const routes = (app) => {
     app.get('/jobs', authTokenService.checkPartnerToken, jobsController.getJobs);
     app.get('/jobs/:jobId', authTokenService.checkPartnerToken, jobsController.getJob);
-    app.get('/admin/jobs', authTokenService.checkAdminToken, adminController.getAllJobsData);
-    app.post('/admin/jobs/filljob/:jobId', checkAdminToken, adminController.postFilledJob)
+    app.get('/admin/jobs', authTokenService.checkAdminToken, adminController.getJobs);
+    app.post('/admin/jobs/filljob/:jobId', checkAdminToken, adminController.markJobFilled)
 
     app.get('*', invalidRequestController.httpInvalid);
     app.post('*', invalidRequestController.httpInvalid);

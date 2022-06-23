@@ -10,9 +10,9 @@ const getAllJobsData = async(query) => {
 
 }
 
-const postFilledJob = async (id) => {
-  return await adminRepository.postFilledJob(id);
+const markJobFilled = async (id) => {
+  return await adminRepository.markJobFilled(id);
 }
 
 module.exports.getAllJobsData = getAllJobsData;
-module.exports.postFilledJob = postFilledJob;
+module.exports.markJobFilled = markJobFilled;

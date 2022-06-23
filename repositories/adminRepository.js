@@ -32,7 +32,7 @@ const getAllJobsData = async (query) => {
     return allJobs;
 }
 
-const postFilledJob = async (id) => {
+const markJobFilled = async (id) => {
     const insertJob = await dbService.connectToDb().then((db) => db.query(
         'INSERT INTO `filledjobs` ' +
         'SELECT * FROM `jobs` ' +
@@ -49,4 +49,4 @@ const postFilledJob = async (id) => {
 
 
 module.exports.getAllJobsData = getAllJobsData;
-module.exports.postFilledJob = postFilledJob;
+module.exports.markJobFilled = markJobFilled;

@@ -1,16 +1,20 @@
 const jobsRepository = require('../repositories/jobsRepository');
+const sanitiseAndValidateService = require('../services/sanitiseAndValidateService')
 
 const getJobs = async (query) => {
-    const search = query.search
 
-    if (query.search) {
-        query.search = search.replace(/[^a-z0-9 ]/gi, "").trim();
+    if(sanitiseAndValidateService.alphaNumericSearch(query) === -1) {
+        return -1;
     }
 
     return await jobsRepository.getJobs(query);
 }
 
 const getJob = async (id) => {
+
+    if(sanitiseAndValidateService.idIsNum(id) === -1) {
+        return -1;
+    }
 
     return await jobsRepository.getJob(id);
 
