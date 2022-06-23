@@ -1,16 +1,21 @@
 const adminRepository = require('../repositories/adminRepository');
+const sanitiseAndValidateService = require("./sanitiseAndValidateService");
 
 const getAllJobsData = async(query) => {
-  const search = query.search
 
-  if(query.search) {
-    query.search = search.replace(/[^a-z\d ]/gi, "").trim();
+  if(sanitiseAndValidateService.alphaNumericSearch(query) === -1) {
+    return -1;
   }
   return await adminRepository.getAllJobsData(query);
 
 }
 
 const markJobFilled = async (id) => {
+
+  if(sanitiseAndValidateService.idIsNum(id) === -1) {
+    return -1;
+  }
+
   return await adminRepository.markJobFilled(id);
 }
 

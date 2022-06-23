@@ -1,6 +1,4 @@
-const helperRepository = require('../../repositories/helperRepository');
 const {sqlEdit} = require("../../repositories/helperRepository");
-const {sortDuplicateJobs} = require("../../repositories/helperRepository");
 
 describe('sqlEdit function', () => {
     it('given jobs table and skill filter', () => {
