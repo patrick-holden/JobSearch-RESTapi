@@ -1,74 +1,39 @@
 const dbService = require('../services/dbService');
+const {sqlEdit} = require('./helperRepository');
+const {sortDuplicateJobs} = require("./helperRepository");
 
-const getAllJobsData = async () => {
-    console.log('Repository: getAllJobsData');
-    const allRecords = await dbService.connectToDb().then((db) => db.query(
-        'SELECT `jobs`.`id` ' +
-        // '`jobs`.`job_title`, ' +
-        // '`jobs`.`company`, ' +
-        // '`jobs`.`logo`,' +
-        // '`jobs`.`salary`,' +
-        // '`jobs`.`type`, ' +
-        // '`skills`.`skill` ' +
-        'FROM `jobs`;'
-        // 'LEFT JOIN ' +
-        // '`jobs_skills` ' +
-        // 'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
-        // 'LEFT JOIN `skills` ' +
-        // 'ON `jobs_skills`.`skill_id` = `skills`.`id`;'
-    ));
+const getAllJobsData = async (query) => {
+    console.log('Admin Repository: getAllJobsData');
 
-    let allJobs = [];
-    let previousId = -1;
-    allRecords.forEach((record) => {
-        let lastJob = allJobs[allJobs.length - 1];
-        if (record['id'] !== previousId) {
-            previousId = record['id'];
-            record['skill'] = [record['skill']];
-            allJobs.push(record);
-        } else {
-            lastJob['skill'].push(record['skill']);
-        }
-    })
+    let {sql, searchParams} = sqlEdit('jobs', query);
 
+    const allUnfilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
+        sql, searchParams));
+
+    let unfilledJobs = sortDuplicateJobs(allUnfilledFilterRecords);
+
+    let unfilledCount = unfilledJobs.length;
+    console.log(unfilledCount);
+
+    let sqlEditObj = sqlEdit('filledjobs', query);
+    sql = sqlEditObj.sql;
+    searchParams = sqlEditObj.searchParams;
+
+    const allFilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
+        sql, searchParams));
+
+    let filledJobs = sortDuplicateJobs(allFilledFilterRecords);
+
+    let filledCount = filledJobs.length;
+    console.log(filledCount);
+
+    let allJobs = {
+        "filled job count": filledCount,
+        "filled jobs": filledJobs,
+        "unfilled job count": unfilledCount,
+        "unfilled jobs": unfilledJobs
+    };
     return allJobs;
-}
-
-const getJobData = async (id) => {
-    console.log('Repository: getJob ' + id);
-    const allIdRecords = await dbService.connectToDb().then((db) => db.query(
-        'SELECT ' +
-        '`jobs`.`id`, ' +
-        '`jobs`.`job_title`, ' +
-        '`jobs`.`company`, ' +
-        '`jobs`.`logo`,' +
-        '`jobs`.`job_description`, ' +
-        '`jobs`.`salary`,' +
-        '`jobs`.`posted`,' +
-        '`jobs`.`type`, ' +
-        '`skills`.`skill` ' +
-        ' FROM `jobs` ' +
-        'LEFT JOIN ' +
-        '`jobs_skills` ' +
-        'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
-        'LEFT JOIN `skills` ' +
-        'ON `jobs_skills`.`skill_id` = `skills`.`id` ' +
-        'WHERE `jobs`.`id` = ' + id + ';'));
-
-    let allJobData = [];
-    let previousId = -1;
-    allIdRecords.forEach((record) => {
-        let lastJob = allJobData[allJobData.length - 1];
-        if (record['job_id'] !== previousId) {
-            previousId = record['job_id'];
-            record['skill'] = [record['skill']];
-            allJobData.push(record);
-        } else {
-            lastJob['skill'].push(record['skill']);
-        }
-    })
-
-    return allJobData;
 }
 
 const postFilledJob = async (id) => {
@@ -80,7 +45,7 @@ const postFilledJob = async (id) => {
 
     let insertId = insertJob.insertId;
 
-    const deleteJob = await dbService.connectToDb().then((db) => db.query(
+    await dbService.connectToDb().then((db) => db.query(
         'DELETE FROM `jobs` ' +
         'WHERE `jobs`.`id` = ?;', id));
 
@@ -89,5 +54,4 @@ const postFilledJob = async (id) => {
 
 
 module.exports.getAllJobsData = getAllJobsData;
-module.exports.getJobData = getJobData;
 module.exports.postFilledJob = postFilledJob;

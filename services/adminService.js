@@ -1,15 +1,14 @@
 const adminRepository = require('../repositories/adminRepository');
-const httpResponseService = require('../services/httpResponseService');
-const jobsRepository = require("../repositories/jobsRepository");
 
-const getAllJobsData = async() => {
-  console.log('Service: getAllJobsData');
-  return await adminRepository.getAllJobsData();
-}
+const getAllJobsData = async(query) => {
+  console.log('Admin Service: getAllJobsData');
+  const search = query.search
 
-const getJobData = async (id) => {
-  console.log('Service: getJob ' + id);
-  return await adminRepository.getJobData(id);
+  if(query.search) {
+    query.search = search.replace(/[^a-z\d ]/gi, "").trim();
+  }
+  return await adminRepository.getAllJobsData(query);
+
 }
 
 const postFilledJob = async (id) => {
@@ -18,5 +17,4 @@ const postFilledJob = async (id) => {
 }
 
 module.exports.getAllJobsData = getAllJobsData;
-module.exports.getJobData = getJobData;
 module.exports.postFilledJob = postFilledJob;
