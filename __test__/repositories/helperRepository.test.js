@@ -34,5 +34,13 @@ describe('sqlEdit function', () => {
         })
     })
 
+    it('given jobs table and search with no value', () => {
+        const query = {
+            search: ''
+        }
+        expect(sqlEdit('jobs', query)).toStrictEqual({"searchParams": [],"sql": "SELECT `jobs`.`id`, `jobs`.`job_title`, `jobs`.`company`, `jobs`.`logo`,`jobs`.`salary`,`jobs`.`type`, `skills`.`skill` FROM `jobs` LEFT JOIN `jobs_skills` ON `jobs`.`id` = `jobs_skills`.`job_id` LEFT JOIN `skills` ON `jobs_skills`.`skill_id` = `skills`.`id`;"
+        })
+    })
+
 
 })
