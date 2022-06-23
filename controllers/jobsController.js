@@ -2,7 +2,6 @@ const jobsService = require('../services/jobsService');
 const httpResponseService = require('../services/httpResponseService');
 
 const getJobs = (req, res) => {
-    console.log('Controller: getJobs');
     let search = req.query.search;
     let type = req.query.type;
     let command = req.query.command;
@@ -28,8 +27,6 @@ const getJobs = (req, res) => {
 
 const getJob = (req, res) => {
     let jobId = parseInt(req.params.jobId);
-    console.log(jobId);
-    console.log('Controller: getJob');
     jobsService.getJob(jobId).then((job) => {
         if (job.length === 0) {
             res.json(httpResponseService(res.statusCode,'No job found',true, job))

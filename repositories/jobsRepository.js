@@ -3,7 +3,6 @@ const {sqlEdit} = require("./helperRepository");
 const {sortDuplicateJobs} = require("./helperRepository");
 
 const getJob = async (id) => {
-    console.log('Repository: getJob ' + id);
     const allIdRecords = await dbService.connectToDb().then((db) => db.query(
         'SELECT ' +
         '`jobs`.`id`, ' +
@@ -27,9 +26,7 @@ const getJob = async (id) => {
 }
 
 const getJobs = async (query) => {
-    console.log('Repository: getJobs');
-
-    let {sql, searchParams} = sqlEdit('jobs', query);
+    const {sql, searchParams} = sqlEdit('jobs', query);
 
     const allFilterRecords = await dbService.connectToDb().then((db) => db.query(
       sql, searchParams));

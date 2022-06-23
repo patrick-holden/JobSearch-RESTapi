@@ -1,7 +1,6 @@
 const adminRepository = require('../repositories/adminRepository');
 
 const getAllJobsData = async(query) => {
-  console.log('Admin Service: getAllJobsData');
   const search = query.search
 
   if(query.search) {
@@ -12,7 +11,6 @@ const getAllJobsData = async(query) => {
 }
 
 const postFilledJob = async (id) => {
-  console.log('Service: getJob ' + id);
   return await adminRepository.postFilledJob(id);
 }
 

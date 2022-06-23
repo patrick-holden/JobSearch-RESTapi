@@ -5,15 +5,13 @@ let accessCredentials = {};
 const getAccessCredentials = async () => {
   const dbCredentials = await dbService.connectToDb().then((db) => db.query(
     'SELECT `partners`.`name`, `partners`.`token`, `partners`.`isAdmin` FROM `partners`;'
-  )).catch((err) => console.log('Fred' + err));
-  console.log(dbCredentials);
+  )).catch((err) => console.log(err));
 
   let accessCredentials = {};
 
   for(let credential in dbCredentials) {
     accessCredentials[dbCredentials[credential]['name']] = [dbCredentials[credential]['token'], dbCredentials[credential]['isAdmin']];
   }
-  console.log(accessCredentials);
   return accessCredentials;
 }
 

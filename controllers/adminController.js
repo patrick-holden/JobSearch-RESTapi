@@ -2,7 +2,6 @@ const adminService = require('../services/adminService');
 const httpResponseService = require('../services/httpResponseService');
 
 const getAllJobsData = (req, res) => {
-  console.log('Admin controller: getJobs');
   let search = req.query.search;
   let type = req.query.type;
   let command = req.query.command;
@@ -28,9 +27,7 @@ const getAllJobsData = (req, res) => {
 
 const postFilledJob = (req, res) => {
   let jobId = parseInt(req.params.jobId);
-  console.log(jobId)
   adminService.postFilledJob(jobId).then((id) => {
-    console.log(id)
     let lastid = parseInt(id)
     if (lastid !== jobId) {
       res.json(httpResponseService(res.statusCode,'unsuccessful',true, ))

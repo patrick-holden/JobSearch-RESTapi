@@ -6,7 +6,6 @@ const sqlEdit = (table, query) => {
     let command = query.command;
     let salary = query.salary;
     let skill = query.skill;
-    console.log('SQL Edit ' + type + command + salary);
 
     let order = '';
     if (command === 'above') {
@@ -17,8 +16,6 @@ const sqlEdit = (table, query) => {
 
     let searchTerms;
     let searchParams = [];
-
-    console.log('job search -' + search)
 
     if (search) {
         searchTerms = search.split(" ")
@@ -72,8 +69,6 @@ const sqlEdit = (table, query) => {
 
     sql += ';';
 
-    console.log(searchParams);
-    console.log(sql);
     return {
         sql,
         searchParams
@@ -94,8 +89,6 @@ const sortDuplicateJobs = (allRecords) => {
             lastJob['skill'].push(record['skill']);
         }
     })
-
-    // console.log(`sortDuplicateJobs` + allJobs)
 
     return allJobs;
 }
