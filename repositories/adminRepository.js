@@ -1,37 +1,39 @@
 const dbService = require('../services/dbService');
+const {sqlEdit} = require('./helperRepository');
+const {sortDuplicateJobs} = require("./helperRepository");
 
-const getAllJobsData = async () => {
-  console.log('Repository: getAllJobsData');
-  const allRecords = await dbService.connectToDb().then((db) => db.query(
-    'SELECT `jobs`.`id` ' +
-    // '`jobs`.`job_title`, ' +
-    // '`jobs`.`company`, ' +
-    // '`jobs`.`logo`,' +
-    // '`jobs`.`salary`,' +
-    // '`jobs`.`type`, ' +
-    // '`skills`.`skill` ' +
-    'FROM `jobs`;'
-    // 'LEFT JOIN ' +
-    // '`jobs_skills` ' +
-    // 'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
-    // 'LEFT JOIN `skills` ' +
-    // 'ON `jobs_skills`.`skill_id` = `skills`.`id`;'
-  ));
+const getAllJobsData = async (query) => {
+    console.log('Admin Repository: getAllJobsData');
 
-  let allJobs = [];
-  let previousId = -1;
-  allRecords.forEach((record) => {
-    let lastJob = allJobs[allJobs.length - 1];
-    if (record['id'] !== previousId) {
-      previousId = record['id'];
-      record['skill'] = [record['skill']];
-      allJobs.push(record);
-    } else {
-      lastJob['skill'].push(record['skill']);
-    }
-  })
+    let {sql, searchParams} = sqlEdit('jobs', query);
 
-  return allJobs;
+    const allUnfilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
+        sql, searchParams));
+
+    let unfilledJobs = sortDuplicateJobs(allUnfilledFilterRecords);
+
+    let unfilledCount = unfilledJobs.length;
+    console.log(unfilledCount);
+
+    let sqlEditObj = sqlEdit('filledjobs', query);
+    sql = sqlEditObj.sql;
+    searchParams = sqlEditObj.searchParams;
+
+    const allFilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
+        sql, searchParams));
+
+    let filledJobs = sortDuplicateJobs(allFilledFilterRecords);
+
+    let filledCount = filledJobs.length;
+    console.log(filledCount);
+
+    let allJobs = {
+        "filled job count": filledCount,
+        "filled jobs": filledJobs,
+        "unfilled job count": unfilledCount,
+        "unfilled jobs": unfilledJobs
+    };
+    return allJobs;
 }
 
 module.exports.getAllJobsData = getAllJobsData;
