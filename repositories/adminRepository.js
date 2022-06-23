@@ -16,7 +16,7 @@ const getAllJobsData = async () => {
     // 'ON `jobs`.`id` = `jobs_skills`.`job_id` ' +
     // 'LEFT JOIN `skills` ' +
     // 'ON `jobs_skills`.`skill_id` = `skills`.`id`;'
-  )); 
+  ));
 
   let allJobs = [];
   let previousId = -1;
