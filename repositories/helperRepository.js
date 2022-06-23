@@ -1,4 +1,3 @@
-
 const sqlEdit = (table, query) => {
 
     let search = query.search;

@@ -1,6 +1,5 @@
 const {alphaNumericSearch, idIsNum} =  require('../../services/sanitiseAndValidateService');
 
-
 describe('alphaNumeric Search function', () => {
     it('given valid query search returns query search', () => {
         const query = {
