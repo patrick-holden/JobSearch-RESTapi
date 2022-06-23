@@ -20,15 +20,15 @@ const tokenCheck = (req, res) => {
   const token =  req.headers['x-access-token'];
 
   if (!token || !user) {
-    return res.status(401).send({auth: false, message: 'Credentials missing.'})
+    return res.status(401).send({auth: false, message: 'Please complete all login fields.'})
   }
 
   if (!accessCredentials[user] || !accessCredentials[user][0]) {
-    return res.status(401).send({auth: false, message: 'here i am.'})
+    return res.status(401).send({auth: false, message: 'Access Denied.'})
   }
 
   if (accessCredentials[user][0] !== token) {
-    return res.status(401).send({auth: false, message: 'Invalid token provided.'})
+    return res.status(401).send({auth: false, message: 'Access Denied.'})
   }
 }
 
@@ -48,7 +48,7 @@ const checkAdminToken = (req, res, next) => {
   const user =  req.headers['x-user-name'];
 
   if (accessCredentials[user][1] !== 1) {
-    return res.status(401).send({auth: false, message: 'Invalid token provided.'})
+    return res.status(401).send({auth: false, message: 'Access Denied.'})
   }
 
   next();
