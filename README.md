@@ -136,7 +136,7 @@ This API supports the following requests:
 	"statusCode": 200,
 	"message": "No jobs found",
 	"success": true,
-	"data": {}
+	"result": []
 }
 ```
   
@@ -203,7 +203,7 @@ This API supports the following requests:
 	"statusCode": 200,
 	"message": "No job found",
 	"success": true,
-	"data": {}
+	"result": []
 }
 ```
 </details>
@@ -239,7 +239,7 @@ This API supports the following requests:
     "statusCode": 200,
     "message": "success",
     "success": true,
-    "result": {}
+    "result": []
 }
   
 ```
@@ -254,7 +254,7 @@ This API supports the following requests:
     "statusCode": 200,
     "message": "unsuccessful",
     "success": true,
-    "result": {}
+    "result": []
 }
 ```
   
@@ -266,7 +266,7 @@ Then searching the filled job returns:
     "statusCode": 200,
     "message": "No job found",
     "success": true,
-    "result": {}
+    "result": []
 }
 ```
 </details>
@@ -361,7 +361,7 @@ This route
         "filled job count": 0,
         "filled jobs": [],
         "unfilled job count": 0,
-        "unfilled jobs": {}
+        "unfilled jobs": []
     }
 }
 ```
