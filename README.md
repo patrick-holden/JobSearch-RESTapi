@@ -62,7 +62,7 @@ npm run test
 
 This API supports the following requests: 
 
-### View all jobs
+### View All Jobs - with optional search and filter
 <details>
   
 **URL:**
@@ -78,11 +78,16 @@ This API supports the following requests:
     * No required URL Params, this URL will return all jobs if none are passed. 
 
   * **Optional URL Params:**
-    * No required URL Params, this URL will return all jobs if none are passed. 
-
+    * `search=[alphanumeric]` - matches the search input to jobs by `job_title` and `company`. 
+    * `type=[alphabetical]` - filter jobs by job type using available values: `Part time`, `Full time` and `Contract`. 
+    * `command=[alphabetical]` and `salary=[integer]` - filter jobs by salary using available commands:  `above` and `below`.
+    * `skill=[integer]` - filter jobs by ID of a skill. 
+	
+    -- Note: all filters return jobs related to the search input when used. 
+	
 **Example URL:**
   
-`/jobs`
+`/jobs?search=junior&type=Part time&command=above&salary=130000&skill=5`
   
 * **Success Response**
   * **Code:** 200 <br />
@@ -95,29 +100,29 @@ This API supports the following requests:
     "success": true,
     "result": [
         {
-            "id": 1,
+            "id": 51,
             "job_title": "Junior software developer",
-            "company": "Browsebug",
-            "logo": "https://dummyimage.com/250/ffffff/e330d1&text=Logo",
-            "salary": 103977,
+            "company": "Kazio",
+            "logo": "https://dummyimage.com/250/e330d1/89e632&text=Logo",
+            "salary": 144181,
             "type": "Part time",
             "skill": [
-                "HTML/CSS"
+                "Ruby"
             ]
         },
         {
-            "id": 2,
+            "id": 116,
             "job_title": "Junior software developer",
-            "company": "Rhybox",
+            "company": "Thoughtworks",
             "logo": "https://dummyimage.com/250/e330d1/000000&text=Logo",
-            "salary": 111142,
-            "type": null,
+            "salary": 134024,
+            "type": "Part time",
             "skill": [
-                "APIs"
+                "Ruby"
             ]
         }
     ]
-  }
+}
   
 ```
   
@@ -131,7 +136,7 @@ This API supports the following requests:
 	"statusCode": 200,
 	"message": "No jobs found",
 	"success": true,
-	"data": []
+	"data": {}
 }
 ```
   
@@ -198,59 +203,45 @@ This API supports the following requests:
 	"statusCode": 200,
 	"message": "No job found",
 	"success": true,
-	"data": []
+	"data": {}
 }
 ```
-  
-### Search and Filter Jobs
+</details>
+
+### Mark Job as Filled as Admin
 <details>
-
-**URL:**	
-
-`/jobs/query`
-
+  
+**URL:**
+  
+`/admin/jobs/filljob/:jobId`
+  
 **Method:**
-
-`GET`
+  
+ `POST` <br />
+  
 **URL Params** <br />
   * **Required:**
-    * No required URL Params, this URL will return all jobs if none are passed. 
+    * `:jobId`
 
   * **Optional URL Params:**
-    * `search=[alphanumeric]` -  
-
-**Example URL:**
-
-`/jobs/4`
+    * No optional parameters.
 	
+**Example URL:**
+  
+`/admin/jobs/filljob/5`
+  
 * **Success Response**
   * **Code:** 200 <br />
   * **Response:** <br />
-  
+
 ```json
 {
     "statusCode": 200,
     "message": "success",
     "success": true,
-    "result": [
-        {
-            "id": 4,
-            "job_title": "Junior software developer",
-            "company": "Kanoodle",
-            "logo": "https://dummyimage.com/250/e330d1/89e632&text=Logo",
-            "job_description": "Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.\n\nDuis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.\n\nIn hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo.",
-            "salary": 137498,
-            "posted": "2021-01-23T00:00:00.000Z",
-            "type": "Full time",
-            "skill": [
-                "PHP",
-                "Ruby",
-                "Bash",
-                "TypeScript"
-            ]
-        }
-    ]
+    "result": {}
 }
+  
 ```
   
 * **Error Response**
@@ -260,9 +251,124 @@ This API supports the following requests:
 
 ```json
 {
-	"statusCode": 200,
-	"message": "No job found",
-	"success": true,
-	"data": []
+    "statusCode": 200,
+    "message": "unsuccessful",
+    "success": true,
+    "result": {}
 }
 ```
+  
+	
+Then searching the filled job returns:
+	
+```json
+{
+    "statusCode": 200,
+    "message": "No job found",
+    "success": true,
+    "result": {}
+}
+```
+</details>
+
+	
+### View All Jobs as Admin - with optional search and filter
+<details>
+  
+**URL:**
+  
+`/admin/jobs`
+  
+**Method:**
+  
+ `GET` <br />
+  
+**URL Params** <br />
+  * **Required:**
+    * No required URL Params, this URL will return all jobs if none are passed. 
+
+  * **Optional URL Params:**
+    * `search=[alphanumeric]` - matches the search input to jobs by `job_title` and `company`. 
+    * `type=[alphabetical]` - filter jobs by job type using available values: `Part time`, `Full time` and `Contract`. 
+    * `command=[alphabetical]` and `salary=[integer]` - filter jobs by salary using available commands:  `above` and `below`.
+    * `skill=[integer]` - filter jobs by ID of a skill. 
+	
+    -- Note: all filters return jobs related to the search input when used. 
+	
+This route 
+ - returns all jobs, including those filled
+ - splits filled and unfilled jobs into separate arrays within an object 
+ - provides a count of filled and unfilled jobs 
+	
+**Example URL:**
+  
+`/admin/jobs?search=junior&type=Contract&command=above&salary=120000&skill=10`
+  
+* **Success Response**
+  * **Code:** 200 <br />
+  * **Response:** <br />
+
+```json
+{
+    "statusCode": 200,
+    "message": "Success",
+    "success": true,
+    "result": {
+        "filled job count": 1,
+        "filled jobs": [
+            {
+                "id": 5,
+                "job_title": "Junior software developer",
+                "company": "Photolist",
+                "logo": "https://dummyimage.com/250/ffffff/e330d1&text=Logo",
+                "salary": 120619,
+                "type": "Contract",
+                "skill": [
+                    "HTML/CSS"
+                ]
+            }
+        ],
+        "unfilled job count": 1,
+        "unfilled jobs": [
+            {
+                "id": 473,
+                "job_title": "Junior software engineer",
+                "company": "Jabbersphere",
+                "logo": "https://dummyimage.com/250/ffffff/d91c4e&text=Logo",
+                "salary": 127356,
+                "type": "Contract",
+                "skill": [
+                    "HTML/CSS"
+                ]
+            }
+        ]
+    }
+}
+  
+```
+  
+* **Error Response**
+  * **Code:** 200 <br />
+  * **Response:** <br />
+
+
+```json
+{
+    "statusCode": 200,
+    "message": "No jobs found",
+    "success": true,
+    "result": {
+        "filled job count": 0,
+        "filled jobs": [],
+        "unfilled job count": 0,
+        "unfilled jobs": {}
+    }
+}
+```
+  
+</details>
+
+
+
+
+
