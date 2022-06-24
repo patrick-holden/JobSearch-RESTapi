@@ -6,6 +6,7 @@ const connectToDb = async() => {
     password: 'password',
     database: 'jobsdb'
   })
+
   return db;
 }
 

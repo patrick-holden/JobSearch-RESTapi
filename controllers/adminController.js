@@ -16,7 +16,7 @@ const getJobs = (req, res) => {
     skill: skill,
   }
 
-  adminService.getAllJobsData(query, req, res).then((allJobs) => {
+  adminService.getJobs(query, req, res).then((allJobs) => {
     if(allJobs === -1) {
       res.status(404).json(httpResponseService(res.statusCode,'Invalid Search',true))
     } else if(Object.keys(allJobs).length === 0) {
@@ -24,13 +24,13 @@ const getJobs = (req, res) => {
     } else {
       res.json(httpResponseService(res.statusCode,'Success',true,  allJobs));
     }})
-
 }
 
 const markJobFilled = (req, res) => {
   let jobId = parseInt(req.params.jobId);
   adminService.markJobFilled(jobId).then((id) => {
     let lastId = parseInt(id)
+
     if(lastId === -1) {
       res.status(404).json(httpResponseService(res.statusCode,'TypeError in Id',true))
     } else if (lastId !== jobId) {

@@ -2,14 +2,12 @@ const dbService = require('../services/dbService');
 const {sqlEdit} = require('./helperRepository');
 const {sortDuplicateJobs} = require("./helperRepository");
 
-const getAllJobsData = async (query) => {
+const getJobs = async (query) => {
     let {sql, searchParams} = sqlEdit('jobs', query);
 
     const allUnfilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
         sql, searchParams));
-
     let unfilledJobs = sortDuplicateJobs(allUnfilledFilterRecords);
-
     let unfilledCount = unfilledJobs.length;
 
     let sqlEditObj = sqlEdit('filledjobs', query);
@@ -18,9 +16,7 @@ const getAllJobsData = async (query) => {
 
     const allFilledFilterRecords = await dbService.connectToDb().then((db) => db.query(
         sql, searchParams));
-
     let filledJobs = sortDuplicateJobs(allFilledFilterRecords);
-
     let filledCount = filledJobs.length;
 
     let allJobs = {};
@@ -53,5 +49,5 @@ const markJobFilled = async (id) => {
 }
 
 
-module.exports.getAllJobsData = getAllJobsData;
+module.exports.getJobs = getJobs;
 module.exports.markJobFilled = markJobFilled;

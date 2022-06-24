@@ -1,5 +1,4 @@
 const sqlEdit = (table, query) => {
-
     let search = query.search;
     let type = query.type;
     let command = query.command;
@@ -75,7 +74,6 @@ const sqlEdit = (table, query) => {
 }
 
 const sortDuplicateJobs = (allRecords) => {
-
     let allJobs = [];
     let previousId = -1;
     allRecords.forEach((record) => {
