@@ -2,6 +2,7 @@ const jobsRepository = require('../repositories/jobsRepository');
 const sanitiseAndValidateService = require('../services/sanitiseAndValidateService')
 
 const getJobs = async (query) => {
+
     if(sanitiseAndValidateService.alphaNumericSearch(query) === -1) {
         return -1;
     }
@@ -10,6 +11,7 @@ const getJobs = async (query) => {
 }
 
 const getJob = async (id) => {
+
     if(sanitiseAndValidateService.idIsNum(id) === -1) {
         return -1;
     }

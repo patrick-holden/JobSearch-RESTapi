@@ -86,7 +86,7 @@ const sortDuplicateJobs = (allRecords) => {
             lastJob['skill'].push(record['skill']);
         }
     })
-
+    
     return allJobs;
 }
 

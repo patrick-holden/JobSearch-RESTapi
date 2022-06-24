@@ -48,6 +48,5 @@ const markJobFilled = async (id) => {
     return insertId;
 }
 
-
 module.exports.getJobs = getJobs;
 module.exports.markJobFilled = markJobFilled;

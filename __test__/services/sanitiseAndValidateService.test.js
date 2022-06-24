@@ -7,17 +7,17 @@ describe('alphaNumeric Search function', () => {
         }
         expect(alphaNumericSearch(query)).toStrictEqual(query)
     })
-    it('given invalid query search returns -1', () => {
+    it('given invalid query search does not return query search', () => {
         const query = {
             search: '???'
         }
-        expect(alphaNumericSearch(query)).toStrictEqual(-1)
+        expect(alphaNumericSearch(query)).not.toStrictEqual(query)
     })
     it('given invalid query search returns -1', () => {
         const query = {
             search: '???'
         }
-        expect(alphaNumericSearch(query)).not.toStrictEqual(query)
+        expect(alphaNumericSearch(query)).toStrictEqual(-1)
     })
 })
 
