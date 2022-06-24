@@ -9,15 +9,15 @@ const getAccessCredentials = async () => {
 
   let accessCredentials = {};
 
-  for(let credential in dbCredentials) {
+  for (let credential in dbCredentials) {
     accessCredentials[dbCredentials[credential]['name']] = [dbCredentials[credential]['token'], dbCredentials[credential]['isAdmin']];
   }
   return accessCredentials;
 }
 
 const tokenCheck = (req, res) => {
-  const user =  req.headers['x-user-name'];
-  const token =  req.headers['x-access-token'];
+  const user = req.headers['x-user-name'];
+  const token = req.headers['x-access-token'];
 
   if (!token || !user) {
     return res.status(401).send({auth: false, message: 'Please complete all login fields.'})
@@ -45,7 +45,7 @@ const checkPartnerToken = (req, res, next) => {
 const checkAdminToken = (req, res, next) => {
   tokenCheck(req, res);
 
-  const user =  req.headers['x-user-name'];
+  const user = req.headers['x-user-name'];
 
   if (accessCredentials[user][1] !== 1) {
     return res.status(401).send({auth: false, message: 'Access Denied.'})

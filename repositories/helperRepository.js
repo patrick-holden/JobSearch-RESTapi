@@ -1,6 +1,4 @@
-
 const sqlEdit = (table, query) => {
-
     let search = query.search;
     let type = query.type;
     let command = query.command;
@@ -37,7 +35,7 @@ const sqlEdit = (table, query) => {
         'LEFT JOIN `skills` ' +
         'ON `jobs_skills`.`skill_id` = `skills`.`id`';
 
-    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary))) {
+    if (searchTerms.length > 0 || !isNaN(skill) || type !== undefined || (!isNaN(salary) && command !== undefined)) {
         sql += ' WHERE (';
 
         if (searchTerms.length > 0) {
@@ -76,7 +74,6 @@ const sqlEdit = (table, query) => {
 }
 
 const sortDuplicateJobs = (allRecords) => {
-
     let allJobs = [];
     let previousId = -1;
     allRecords.forEach((record) => {

@@ -1,7 +1,7 @@
 const adminService = require('../services/adminService');
 const httpResponseService = require('../services/httpResponseService');
 
-const getAllJobsData = (req, res) => {
+const getJobs = (req, res) => {
   let search = req.query.search;
   let type = req.query.type;
   let command = req.query.command;
@@ -16,20 +16,24 @@ const getAllJobsData = (req, res) => {
     skill: skill,
   }
 
-  adminService.getAllJobsData(query, req, res).then((allJobs) => {
-    if(allJobs.length === 0) {
+  adminService.getJobs(query, req, res).then((allJobs) => {
+    if(allJobs === -1) {
+      res.status(404).json(httpResponseService(res.statusCode,'Invalid Search',true))
+    } else if(Object.keys(allJobs).length === 0) {
       res.json(httpResponseService(res.statusCode, 'No jobs found',true, allJobs))
     } else {
       res.json(httpResponseService(res.statusCode,'Success',true,  allJobs));
     }})
-
 }
 
-const postFilledJob = (req, res) => {
+const markJobFilled = (req, res) => {
   let jobId = parseInt(req.params.jobId);
-  adminService.postFilledJob(jobId).then((id) => {
-    let lastid = parseInt(id)
-    if (lastid !== jobId) {
+  adminService.markJobFilled(jobId).then((id) => {
+    let lastId = parseInt(id)
+
+    if(lastId === -1) {
+      res.status(404).json(httpResponseService(res.statusCode,'TypeError in Id',true))
+    } else if (lastId !== jobId) {
       res.json(httpResponseService(res.statusCode,'unsuccessful',true, ))
     } else {
       res.json(httpResponseService(res.statusCode,'success',true,))
@@ -37,5 +41,5 @@ const postFilledJob = (req, res) => {
   });
 }
 
-module.exports.getAllJobsData = getAllJobsData;
-module.exports.postFilledJob = postFilledJob;
+module.exports.getJobs = getJobs;
+module.exports.markJobFilled = markJobFilled;

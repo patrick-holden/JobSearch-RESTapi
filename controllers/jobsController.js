@@ -17,7 +17,9 @@ const getJobs = (req, res) => {
     }
 
     jobsService.getJobs(query).then((query) => {
-        if (query.length === 0) {
+        if(query === -1) {
+            res.status(404).json(httpResponseService(res.statusCode,'Invalid Search',true))
+        } else if (query.length === 0) {
             res.json(httpResponseService(res.statusCode, 'No jobs found', true, query))
         } else {
             res.json(httpResponseService(res.statusCode, 'success', true, query))
@@ -28,7 +30,9 @@ const getJobs = (req, res) => {
 const getJob = (req, res) => {
     let jobId = parseInt(req.params.jobId);
     jobsService.getJob(jobId).then((job) => {
-        if (job.length === 0) {
+        if(job === -1) {
+            res.status(404).json(httpResponseService(res.statusCode,'TypeError in Id',true))
+        } else if (job.length === 0) {
             res.json(httpResponseService(res.statusCode,'No job found',true, job))
         } else {
             res.json(httpResponseService(res.statusCode,'success',true, job))
