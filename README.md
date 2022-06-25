@@ -2,7 +2,7 @@
 
 Welcome to our RESTful API where you can find job listings. 
 
-Authors: Grace Sessions, Patrick Holden, Daniel Porter
+Authors: Grace Sessions, <a href="https://github.com/patrick-holden/" target=_blank>Patrick Holden</a>, Daniel Porter
 
 ## API Documentation
 
